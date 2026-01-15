@@ -1,0 +1,1688 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O.N.G. Colectivo Social Nacional – Sistema de Censo Territorial</title>
+    <style>
+        /* ===== ESTILOS GENERALES ===== */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+        header {
+            background: linear-gradient(135deg, #0052B1 0%, #0066CC 100%);
+            color: white;
+            padding: 20px;
+            max-width: 800px;
+            margin: 20px auto 10px auto;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 82, 177, 0.25);
+        }
+        .container {
+            max-width: 800px;
+            background: white;
+            margin: 0 auto 30px auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        /* ===== SISTEMA DE PESTAÑAS ===== */
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 10px 10px 0 0;
+            overflow: hidden;
+            margin-bottom: 0;
+            border-bottom: 2px solid #0052B1;
+        }
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background: #e9ecef;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #495057;
+            transition: all 0.3s;
+            border-right: 1px solid #dee2e6;
+        }
+        .tab.active {
+            background: #0052B1;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+            padding: 25px;
+            animation: fadeIn 0.4s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* ===== BARRA DE PROGRESO ===== */
+        .progress-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+            padding: 0 10px;
+        }
+        .progress-bar {
+            position: absolute;
+            top: 20px;
+            left: 10%;
+            height: 4px;
+            background: linear-gradient(90deg, #0052B1, #0066CC);
+            z-index: 2;
+            transition: width 0.5s ease;
+            border-radius: 2px;
+        }
+        .progress-step {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            width: 40px;
+            height: 40px;
+            background: #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #666;
+            transition: all 0.3s;
+        }
+        .progress-step.active {
+            background: linear-gradient(135deg, #0052B1, #0066CC);
+            color: white;
+            transform: scale(1.1);
+        }
+        .progress-label {
+            position: absolute;
+            top: 45px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* ===== MÓDULOS DEL FORMULARIO ===== */
+        .module {
+            display: none;
+        }
+        .module.active {
+            display: block;
+        }
+        .module-title {
+            color: #0052B1;
+            border-bottom: 3px solid #eaeaea;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            font-size: 1.4em;
+        }
+        
+        /* ===== ESTILOS DE FORMULARIO (TAMAÑOS UNIFORMES) ===== */
+        label {
+            display: block;
+            margin-top: 18px;
+            font-weight: 600;
+            color: #444;
+            font-size: 15px; /* TAMAÑO UNIFORME PARA TODOS LOS LABELS */
+        }
+        input, select {
+            width: 100%;
+            padding: 14px;
+            margin-top: 6px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: all 0.3s;
+            background: #f9f9f9;
+        }
+        input:focus, select:focus {
+            border-color: #0052B1;
+            background: white;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 82, 177, 0.15);
+        }
+        
+        /* Estilo específico para campo numérico de edad (sin flechas) */
+        #edad {
+            -moz-appearance: textfield;
+        }
+        #edad::-webkit-outer-spin-button,
+        #edad::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        .required {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        /* ===== BOTONES ===== */
+        button {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #0052B1 0%, #0066CC 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 82, 177, 0.2);
+        }
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 82, 177, 0.3);
+        }
+        button.secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #868e96 100%);
+        }
+        
+        /* ===== CAMPOS CONDICIONALES ===== */
+        .conditional-field {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #0052B1;
+            animation: slideIn 0.3s ease;
+        }
+        
+        /* ===== MAPA INTERACTIVO (MAPA 1 - CSS) ===== */
+        #mapa-css {
+            width: 100%;
+            height: 500px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #0052B1;
+        }
+        .comuna-css {
+            position: absolute;
+            background: rgba(0, 82, 177, 0.15);
+            border: 2px solid #0052B1;
+            border-radius: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0052B1;
+            font-weight: 600;
+            font-size: 12px;
+            overflow: hidden;
+            box-sizing: border-box;
+            z-index: 5; /* ASEGURA QUE TODAS ESTÉN AL MISMO NIVEL */
+        }
+        .comuna-css:hover {
+            background: rgba(0, 82, 177, 0.3);
+            transform: scale(1.05);
+            z-index: 10;
+        }
+        
+        /* ===== TOOLTIP DEL MAPA ===== */
+        .map-tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            pointer-events: none;
+            z-index: 1000;
+            min-width: 180px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: none;
+            backdrop-filter: blur(4px);
+        }
+        
+        /* ===== TARJETAS DE ESTADÍSTICAS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            text-align: center;
+            border-top: 4px solid #0052B1;
+        }
+        .stat-card h3 {
+            margin: 0 0 10px 0;
+            color: #0052B1;
+            font-size: 1.1em;
+        }
+        .stat-card .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        /* ===== TABLA DE ADMINISTRACIÓN ===== */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .data-table th {
+            background: #0052B1;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .data-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        /* ===== MENSAJE DE ÉXITO ===== */
+        .success-message {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: bold;
+            border: 2px solid #c3e6cb;
+            display: none;
+        }
+        .codigo-censo {
+            font-size: 1.4em;
+            color: #0052B1;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            display: inline-block;
+            font-family: monospace;
+        }
+        
+        /* ===== BOTONES ESPECIALES ===== */
+        .btn-export {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+            margin: 10px 5px;
+        }
+        .btn-export:hover {
+            background: linear-gradient(135deg, #218838 0%, #1e9e8a 100%) !important;
+        }
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+            padding: 5px 10px !important;
+            font-size: 12px !important;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #0052B1 0%, #0066CC 100%) !important;
+            padding: 5px 10px !important;
+            font-size: 12px !important;
+            margin-right: 5px;
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .container, header {
+                max-width: 95%;
+                padding: 15px;
+            }
+            .tabs {
+                flex-direction: column;
+            }
+            .tab {
+                border-right: none;
+                border-bottom: 1px solid #dee2e6;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            #mapa-css {
+                height: 400px;
+            }
+        }
+        
+        /* ANIMACIONES */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h3>O.N.G. Colectivo Social Nacional</h3>
+        <h2>Observatorio Social - Sistema de Censo Territorial</h2>
+        <h1>Plataforma Integral de Gestión Social</h1>
+    </header>
+
+    <div class="container">
+        <!-- SISTEMA DE PESTAÑAS -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('censo')">📋 Nuevo Censo</button>
+            <button class="tab" onclick="switchTab('mapa')">🗺️ Mapa Interactivo</button>
+            <button class="tab" onclick="switchTab('admin')">📊 Administración</button>
+        </div>
+
+        <!-- PESTAÑA 1: FORMULARIO DE CENSO -->
+        <div id="censo-tab" class="tab-content active">
+            <!-- BARRA DE PROGRESO -->
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+                <div class="progress-step active" data-step="1">1<div class="progress-label">Datos Personales</div></div>
+                <div class="progress-step" data-step="2">2<div class="progress-label">Contacto</div></div>
+                <div class="progress-step" data-step="3">3<div class="progress-label">Actividad</div></div>
+                <div class="progress-step" data-step="4">4<div class="progress-label">Ubicación</div></div>
+                <div class="progress-step" data-step="5">5<div class="progress-label">Legal</div></div>
+            </div>
+
+            <!-- MÓDULO 1: DATOS PERSONALES -->
+            <div class="module active" id="m1">
+                <h2 class="module-title">Módulo 1 – Datos Personales</h2>
+                
+                <label>Nombre completo <span class="required">*</span></label>
+                <input id="nombre" placeholder="Ingrese su nombre completo">
+                
+                <div style="display:flex; gap:20px; margin:10px 0;">
+                    <div style="flex:1;">
+                        <label>Cédula <span class="required">*</span></label>
+                        <input id="cedula" placeholder="Ej: 1234567890" type="text">
+                    </div>
+                    <div style="flex:1;">
+                        <label>Edad <span class="required">*</span></label>
+                        <!-- CAMPO DE EDAD COMO INPUT NUMÉRICO SIMPLE (NO SELECT) -->
+                        <input type="number" id="edad" min="1" max="120" placeholder="Ej: 25">
+                    </div>
+                </div>
+                
+                <label>Género <span class="required">*</span></label>
+                <select id="genero">
+                    <option value="">Seleccione</option>
+                    <option value="masculino">Masculino</option>
+                    <option value="femenino">Femenino</option>
+                    <option value="otro">Otro</option>
+                </select>
+                
+                <!-- CAMPO CONDICIONAL: MADRE CABEZA DE HOGAR -->
+                <div class="conditional-field" id="madreCabezaField">
+                    <label>¿Es madre cabeza de hogar? <span class="required">*</span></label>
+                    <select id="madreCabeza">
+                        <option value="">Seleccione</option>
+                        <option value="si">Sí</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+                
+                <div class="actions" style="margin-top:30px; display:flex; justify-content:flex-end;">
+                    <button onclick="nextModule(1)">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- MÓDULO 2: CONTACTO -->
+            <div class="module" id="m2">
+                <h2 class="module-title">Módulo 2 – Contacto</h2>
+                
+                <label>Teléfono <span class="required">*</span></label>
+                <input id="telefono" placeholder="Ej: 3001234567">
+                
+                <label>Dirección de vivienda</label>
+                <input id="direccion" placeholder="Calle, carrera, número">
+                
+                <label>Casa propia <span class="required">*</span></label>
+                <select id="casa">
+                    <option value="">Seleccione</option>
+                    <option value="si">Sí</option>
+                    <option value="no">No</option>
+                </select>
+                
+                <!-- CAMPO CONDICIONAL: TIPO DE VIVIENDA SI NO ES PROPIA -->
+                <div class="conditional-field" id="tipoViviendaField">
+                    <label>Si no es propia, especifique <span class="required">*</span></label>
+                    <select id="tipoVivienda">
+                        <option value="">Seleccione</option>
+                        <option value="familiar">Vive con familiares</option>
+                        <option value="arriendo">Arriendo</option>
+                        <option value="prestada">Vivienda prestada</option>
+                        <option value="invitado">Invitado</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+                
+                <div class="actions" style="margin-top:30px; display:flex; justify-content:space-between;">
+                    <button class="secondary" onclick="prevModule(2)">Anterior</button>
+                    <button onclick="nextModule(2)">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- MÓDULO 3: ACTIVIDAD -->
+            <div class="module" id="m3">
+                <h2 class="module-title">Módulo 3 – Actividad</h2>
+                
+                <label>Tipo de trabajo <span class="required">*</span></label>
+                <select id="trabajo">
+                    <option value="">Seleccione</option>
+                    <option value="formal">Formal</option>
+                    <option value="informal">Informal</option>
+                    <option value="desempleado">Desempleado</option>
+                    <option value="estudiante">Estudiante</option>
+                    <option value="pensionado">Pensionado</option>
+                </select>
+                
+                <!-- CAMPO CONDICIONAL: SUBCATEGORÍA DE TRABAJO INFORMAL -->
+                <div class="conditional-field" id="subcategoriaTrabajoField">
+                    <label>Subcategoría de trabajo informal <span class="required">*</span></label>
+                    <select id="subcategoriaTrabajo">
+                        <option value="">Seleccione</option>
+                        <option value="vendedor">Vendedor informal</option>
+                        <option value="turnos">Trabajo por turnos</option>
+                        <option value="horas">Trabajo por horas</option>
+                        <option value="independiente">Independiente</option>
+                        <option value="otros">Otros</option>
+                    </select>
+                </div>
+                
+                <label>Detalle de la ocupación</label>
+                <input id="detalle" placeholder="Ej: Reciclador, comerciante ambulante, etc.">
+                
+                <div class="actions" style="margin-top:30px; display:flex; justify-content:space-between;">
+                    <button class="secondary" onclick="prevModule(3)">Anterior</button>
+                    <button onclick="nextModule(3)">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- MÓDULO 4: UBICACIÓN -->
+            <div class="module" id="m4">
+                <h2 class="module-title">Módulo 4 – Ubicación</h2>
+                
+                <label>Comuna <span class="required">*</span></label>
+                <select id="comuna" onchange="cargarBarrios()">
+                    <option value="">Seleccione una comuna</option>
+                    <!-- Las comunas se cargan dinámicamente -->
+                </select>
+                
+                <label>Barrio <span class="required">*</span></label>
+                <select id="barrio">
+                    <option value="">Primero seleccione una comuna</option>
+                </select>
+                
+                <div class="actions" style="margin-top:30px; display:flex; justify-content:space-between;">
+                    <button class="secondary" onclick="prevModule(4)">Anterior</button>
+                    <button onclick="nextModule(4)">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- MÓDULO 5: LEGAL -->
+            <div class="module" id="m5">
+                <h2 class="module-title">Módulo 5 – Legal</h2>
+                
+                <label>¿Ha sido vulnerado en sus derechos?</label>
+                <select id="derechos">
+                    <option value="">Seleccione</option>
+                    <option value="decomiso">Decomiso</option>
+                    <option value="maltrato">Maltrato</option>
+                    <option value="desplazamiento">Desplazamiento</option>
+                    <option value="ninguno">Ninguno</option>
+                </select>
+                
+                <label>Relación con institución</label>
+                <select id="relacionInstitucion">
+                    <option value="">Seleccione</option>
+                    <option value="ninguna">Ninguna</option>
+                    <option value="policia">Policía</option>
+                    <option value="funcionario_alcaldia">Funcionario de alcaldía</option>
+                    <option value="miembro_comercio">Miembro del comercio</option>
+                    <option value="otros">Otros</option>
+                </select>
+                
+                <div class="checkbox-container" style="display:flex; align-items:center; margin-top:25px; padding:18px; background:#f8f9fa; border-radius:8px;">
+                    <input type="checkbox" id="acepto" style="width:auto; margin-right:15px; transform:scale(1.3);">
+                    <label for="acepto" style="margin-top:0; font-weight:500;">Acepto el tratamiento de datos conforme a la Ley 1581 de 2012 <span class="required">*</span></label>
+                </div>
+                
+                <div class="actions" style="margin-top:30px; display:flex; justify-content:space-between;">
+                    <button class="secondary" onclick="prevModule(5)">Anterior</button>
+                    <button onclick="finalizarRegistro()">Finalizar registro</button>
+                </div>
+            </div>
+            
+            <!-- MENSAJE DE ÉXITO -->
+            <div class="success-message" id="successMessage">
+                <h3>¡Registro completado exitosamente!</h3>
+                <p>Su código de censo es:</p>
+                <div class="codigo-censo" id="codigoCenso"></div>
+                <p>Guarde este código para futuras referencias.</p>
+            </div>
+        </div>
+
+        <!-- PESTAÑA 2: MAPA INTERACTIVO -->
+        <div id="mapa-tab" class="tab-content">
+            <h2 class="module-title">🗺️ Mapa Interactivo Territorial</h2>
+            
+            <!-- CONTENEDOR DEL MAPA -->
+            <div id="mapa-css"></div>
+            
+            <!-- TOOLTIP DEL MAPA -->
+            <div class="map-tooltip" id="mapTooltip"></div>
+            
+            <!-- ESTADÍSTICAS DEL MAPA -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Comuna Seleccionada</h3>
+                    <div class="number" id="comunaSeleccionada">-</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Barrios en Comuna</h3>
+                    <div class="number" id="barriosComuna">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Registros en Comuna</h3>
+                    <div class="number" id="registrosComuna">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Densidad (reg/barrio)</h3>
+                    <div class="number" id="densidadComuna">-</div>
+                </div>
+            </div>
+            
+            <!-- BOTONES DE ACCIÓN -->
+            <div style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;">
+                <button onclick="generarReporteComuna()" style="padding:12px 24px; background:linear-gradient(135deg, #28a745 0%, #20c997 100%); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; flex:1; min-width:200px;">
+                    📋 Generar Reporte de Comuna
+                </button>
+                <button onclick="verDetalleComuna()" class="secondary" style="flex:1; min-width:200px;">
+                    🔍 Ver Detalle Completo
+                </button>
+            </div>
+        </div>
+
+        <!-- PESTAÑA 3: ADMINISTRACIÓN -->
+        <div id="admin-tab" class="tab-content">
+            <h2 class="module-title">📊 Panel de Administración</h2>
+            
+            <!-- ESTADÍSTICAS PRINCIPALES -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Registros</h3>
+                    <div class="number" id="totalRegistros">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Registros Hoy</h3>
+                    <div class="number" id="registrosHoy">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Mujeres Registradas</h3>
+                    <div class="number" id="mujeresRegistradas">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Trabajo Informal</h3>
+                    <div class="number" id="trabajoInformal">0</div>
+                </div>
+            </div>
+            
+            <!-- BOTONES DE EXPORTACIÓN -->
+            <div style="margin:20px 0; display:flex; gap:10px; flex-wrap:wrap;">
+                <button onclick="exportarAExcel()" class="btn-export" style="flex:1; min-width:200px;">
+                    📊 Exportar a Excel (Todos los registros)
+                </button>
+                <button onclick="exportarFiltradosExcel()" class="btn-export" style="flex:1; min-width:200px;">
+                    📋 Exportar Resultados Filtrados
+                </button>
+            </div>
+            
+            <!-- BARRA DE BÚSQUEDA -->
+            <div style="margin:20px 0;">
+                <input type="text" id="searchInput" placeholder="🔍 Buscar por cédula, nombre o código..." 
+                       style="width:100%; padding:15px; border:2px solid #dee2e6; border-radius:8px; font-size:16px;">
+            </div>
+            
+            <!-- TABLA DE REGISTROS -->
+            <div style="overflow-x:auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nombre</th>
+                            <th>Cédula</th>
+                            <th>Comuna</th>
+                            <th>Fecha</th>
+                            <th>Acciones</th>
+                            <th>Eliminar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="registrosBody">
+                        <!-- Los registros se cargan dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- CONTADOR DE REGISTROS -->
+            <div style="text-align:center; margin:20px 0; color:#666;">
+                <p id="contadorRegistros">Mostrando 0 registros</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // CONFIGURACIÓN Y DATOS DEL SISTEMA
+        // ============================================
+        
+        // Base de datos en memoria (se guarda en localStorage)
+        let database = {
+            registros: JSON.parse(localStorage.getItem('censoRegistros')) || [],
+            estadisticas: JSON.parse(localStorage.getItem('censoEstadisticas')) || {
+                total: 0, hoy: 0, mujeres: 0, informales: 0,
+                porComuna: {}, porGenero: { masculino: 0, femenino: 0, otro: 0 }
+            }
+        };
+        
+        // Datos de comunas y barrios (445 barrios en 13 comunas)
+        const barriosPorComuna = {
+            "Centro": ["Augusto E Medina", "Baltazar", "Centro", "Combeima", "Estacion", "Interlaken", "La Pola", "Libertador", "Pola parte alta", "Pueblo nuevo", "San pedro Alejandrino"],
+            "Calambeo": ["20 de Julio", "7 de Agosto", "Alaska", "Ancon", "Belén", "Belencito", "Centenario", "Centro pan de Azúcar", "Clarita Botero", "La Aurora", "La Paz", "La Sofía", "La Trinidad", "Malavar", "Paraíso", "San Diego", "Santa Barbara", "Santa Cruz", "VI Brigada", "Viña de Clambeo", "Villa Adriana"],
+            "San Simón": ["Antonio Nariño", "Belalcázar", "Calambeo", "Carmenza Rocha", "El Carmen", "Fenalco", "Gaitán parte alta", "INEM", "La esperanza", "La Granja", "La Acacias", "San simón parte alta", "Villa llusión", "Villa Pinzón", "Villa Valentina", "Viveros"],
+            "Piedra Pintada": ["Alfonso López", "Calarcá", "Cambulos", "Caracolí", "Castilla", "Gaitán", "Jacaranda", "Jesús María Córdoba", "José maría córdoba pate baja", "Limonar", "Limonar V sector", "Onzaga", "Piedra pintada", "Pijao", "Restrepo", "Rincón de piedra pintada", "San Carlos", "San Luis", "Sorrento", "Toscana", "Triunfo", "Villa Marlen I", "Villa Marlen II", "Villa Teresa"],
+            "Jordán": ["4 Etapa del Jordán", "6 Etapa del Jordán", "7 Etapa del Jordán", "8 Etapa del Jordán", "9 Etapa del Jordán", "Andalicia", "Arboleda margaritas", "Arkacentro", "Arkamonica", "Arrayanes", "Calatayud", "Conj Res La Alemania", "Cordobita", "El Edén", "La campiña", "La Ladera", "Las Margaritas", "Las orquídeas", "Macadamia", "Multifamiliares el Jordán", "Multifamiliares Las Margaritas", "Prados del Norte", "Rincón de la Campiña", "San jacinto", "Torre Ladera", "Urb Aymara I", "Urb Aymara II", "Rincon de las Margaritas", "Urb Los Ocobos", "Urb Milenio I y II", "Urb Yacaira", "Urb Parrales"],
+            "Vergel": ["Agua viva", "Altos de san francisco", "Balcones del vergel", "Bosques del vergel", "Brisas de Pedregal", "Cañaveral I", "Cañaveral II", "Camino de juan pablo II", "camino de san Francisco", "Camino del Vergel", "Condómino Ronda del Vergel", "Condómino tierra alta", "Conjunto cerrado Ambala", "Conjunto cerrado los Balsos", "El Mirador", "El Triunfo", "Estancia del vergel", "Fuente de Los Rosales", "Fuente de Los Rosales II", "La balsa", "La Esperanza", "La Gaviota", "Las Delicias", "Loa Alpes", "Loa Ángeles", "Los ciruelos", "Los Mandarinos", "Monte Madero", "Monte verde del Vergel", "Palma del Vergel", "Paseo de san Francisco", "Plazas del Bosque", "Portal del Vergel", "Primavera de Entre Rio", "Reservas del Pedregal", "Rincón de San Francisco", "Rincón del Pedregal I", "Rincón del Pedregal II", "Rincón del Vergel", "San Antonio", "Tierra linda del Vergel", "Torre fuente de los Rosales", "Torres de la Calleja", "Urb Arkala I", "Urb Arkambuco I", "Colinas del Norte", "Urb Pedregal", "Urb Villa Patricia", "Urb Altos de Ambala", "Urb Altos del pedregal", "Urb Ambala", "Urb Antares I", "Urb Antares II", "Urb Arkala II", "Urb Chicala", "Urb Entre Ríos I", "Urb Entre Ríos II", "Urb Fuente de los Rosales I", "Urb Girasol", "Urb Ibagué 2000", "Urb Los Cambulos", "Urb Los Gualandayes", "Urb Villa Vanesa", "Villa Gloria"],
+            "Salado": ["Alamos", "chico", "El Salado", "Hacienda el Recreo", "Los Musicos", "Mirador de Cantabria", "Modelia I", "Modelia II", "Nueva Bilbao", "Pedro Ignacio VillaMarin", "Rosales de Tailandia", "Santa Ana", "Sector los Alpes", "Timaka", "Urb Santa Coloma", "Urb Alameda", "Urb Carlos LLeras C", "Urb Ambikaima", "Urb Cantabria", "Urb Comfatolima", "Urb Diana Milaidy", "Urb El Dorado", "Urb El Limón", "Urb El Palmar", "Fuente del Salado", "Urb Fuente santa", "Urb La Cabaña", "Urb La Candelar", "Urb La Floresta", "Urb La victoria", "Urb Lady Diana", "Urb Los Lagos", "Urb Monte Carlos", "Urb Oviedo", "Urb Pacandé", "Urb Palma del Rio", "Urb Palo Grande", "Urb Portales del Norte", "Urb Praderas del Norte", "Urb Reservas de Cantabria", "Urb San Luis", "Urb San Luis Gonzaga", "Urb San Luis II", "Urb San Pablo", "Urb San Sebastián", "Urb Santa catalina I", "Urb Santa Mónica", "Urb Shaddai", "Urb Territorio de Paz", "Urb Villa Brasilia", "Urb Villa clara II", "Urb Villa Julieta", "Protecho", "Urb Quinta Avenida", "Urb Tolima Grande", "Urb Vasconia", "Urb Vasconia Reservado", "Urb Villa del Norte", "Urb Villa del Palmar", "Urb Villa del Sol", "Urb Villa esperanza", "Urb Villa Jardín", "Urb Villa la paz", "Urb Villa Magdalena", "Urb Villa Marcela", "Urb Villa Vicentina", "Cristales", "Yerbabuena"],
+            "Simón Bolívar": ["Atolsure", "Caminos del Bosque", "Ciudadela Simón Bolívar I", "Ciudadela Simón Bolívar II", "Ciudadela Simón Bolívar III", "Conj Recid San Joaquín", "El Bunde I ,II y III", "Urb El bunde IV", "German Huertas", "Jardín I", "Jardín III", "Jardín parte baja", "Jardín Santander I, II y III", "Jardín Valparaíso", "La Cima I", "La Cima II", "Musicaria", "palermo", "portal del Jardín", "Reservas del Jardín", "Roberto Augusto Calderón", "San Gelato", "Topacio", "Tulio Varón", "Unidad Resid Carabineros", "Urb 2 de Julio", "Urb Agua Marina", "Urb Altos de Vasconia", "Urb Antonio María", "Urb Brisas de Vasconia", "Urb Buenaventura García", "Urb Ciudad Blanca", "Urb El Palmar I", "Urb El Palmar II", "Urb El Prado I", "Urb El Prado II", "Urb Jardín Antolsure", "Urb Jardín Avenida V", "Urb Jardín Chipalo I", "Urb Jardín Chipalo II", "Urb Jardín II", "Urb Jardín Porvenir", "Urb Jardín VI", "Urb Jardines del Campo", "Urb La Esmeralda", "Urb Las Acacias", "Urb Los Comuneros", "Urb Los Laureles", "Urb Los Pinos", "Urb Nueva Castilla", "Urb Nueva Colombia", "Urb Nuevo Armero", "Urb Nuevo Combeima", "Urb Nuevo Combeima II", "Urb Portal de Arkalá", "Versalles"],
+            "Picaleña Mirolindo": ["Etapa II del Jordán", "Alfonso Uribe Badillo", "Altamira", "Aparco", "arboleda", "Arkaniza I", "Arkaniza II", "Arkaparaíso", "Bello Horizonte", "Bosque de la Alameda", "Carrenales", "Cond Las Palmeras", "Conj Resid Valparaíso", "El Tunal", "hacienda piedra pintada", "Jordán 3 Etapa", "Jordán 1 Etapa", "La Floresta", "Los Tunjos", "Picaleñita", "Picaleña", "portal de los Tunjos", "Reservas del Campestre", "San Francisco", "san remo", "Urb Bosque de Varsovia", "Urb Chaquen", "Urb Ciudad Luz", "Urb Comfenalco", "Urb Coopdiasam", "Urb Cutucumay", "Urb El poblado", "Urb Las Américas", "Urb Las flores", "Urb Los Remansos", "Urb Miraflores", "Urb nuevo horizonte", "Urb portal campestre", "Urb Praderas de santa Rita", "Urb Tahití", "Urb Varsovia", "Urb Villa Arkadia", "Urb Villa café", "Urb Villa de la Candelaria", "Urb Villa luz", "Urb Villa Yuli", "Valparaíso I", "Valparaíso II", "Valparaíso III", "Valparaíso IV", "Villa Carvajalita", "Villa del Pilar", "Villa María", "Villa Natalia"],
+            "Estadio": ["Arkalena", "Bosques de santa Helena", "Boyacá", "Cádiz", "Casa Club", "Castellana", "Claret", "Departamental", "Federico Lleras", "Hipódromo", "La Francia", "Las palmas", "Laureles", "Macarena parte Alta", "Macarena", "Macarena parte Baja", "Magisterio", "Metaima parte Alta", "Metaima parte Baja", "monte alegre", "Nacional", "Naciones Unidas", "San Cayetano", "Santa Helena", "Santander"],
+            "Ferias": ["12 de Octubre", "Alto de la Cruz", "América", "Arado", "Bosque Parte Alta", "Bosque parte baja", "refugio I", "refugio II", "Garzón", "Independiente", "La Isla", "La Martinica", "Las Brisas", "Las Ferias", "Libertad", "Los Mártires", "Peñón", "Popular", "Rodríguez Andrade", "san Vicente de Paúl", "Uribe Uribe", "Villa del río", "Villa María"],
+            "Las Brisas": ["Andrés López de Galarza", "Avenida", "Colonias de Asprovi", "Galán", "Industrial", "Kennedy", "La Gaitana", "La pradera", "La Reforma", "Las Vegas", "Matallana", "Murillo Toro", "Ricaurte", "Rosa Badillo", "Santofimio", "Urb Arkaima", "Urb Divino Niño", "Urb terrazas del Tejar", "Venecia", "Villa Claudia", "Villa Luces", "Yuldaima"],
+            "Boquerón": ["Albania", "Boquerón", "Cerro Granate", "Colinas I", "Colinas II", "Darío Echandía", "Granada", "Isla", "Jazmín", "La Unión", "Miramar", "San Isidro", "terrazas de Boquerón", "Villa Mery"]
+        };
+        
+        const comunas = ["Centro", "Calambeo", "San Simón", "Piedra Pintada", "Jordán", "Vergel", "Salado", "Simón Bolívar", "Picaleña Mirolindo", "Estadio", "Ferias", "Las Brisas", "Boquerón"];
+        
+        // ============================================
+        // FUNCIONES DEL SISTEMA (PESTAÑAS)
+        // ============================================
+        
+        // Cambiar entre pestañas
+        function switchTab(tabName) {
+            // Ocultar todas las pestañas
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(tabBtn => tabBtn.classList.remove('active'));
+            
+            // Mostrar pestaña seleccionada
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            document.querySelector(`.tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            
+            // Ejecutar acciones específicas por pestaña
+            if (tabName === 'admin') actualizarPanelAdmin();
+            if (tabName === 'mapa') inicializarMapaCSS();
+        }
+        
+        // ============================================
+        // FUNCIONES DEL FORMULARIO DE CENSO
+        // ============================================
+        
+        // Inicializar select de comunas en el formulario
+        function inicializarComunasSelect() {
+            const comunaSelect = document.getElementById('comuna');
+            comunaSelect.innerHTML = '<option value="">Seleccione una comuna</option>';
+            comunas.forEach((comuna, index) => {
+                const option = document.createElement('option');
+                option.value = comuna;
+                option.textContent = `${index + 1}. ${comuna}`;
+                comunaSelect.appendChild(option);
+            });
+        }
+        
+        // Cargar barrios según comuna seleccionada
+        function cargarBarrios() {
+            const barrioSelect = document.getElementById('barrio');
+            const comunaNombre = document.getElementById('comuna').value;
+            barrioSelect.innerHTML = '<option value="">Seleccione un barrio</option>';
+            
+            if (comunaNombre && barriosPorComuna[comunaNombre]) {
+                // Ordenar barrios alfabéticamente
+                barriosPorComuna[comunaNombre]
+                    .sort((a, b) => a.localeCompare(b, 'es', {sensitivity: 'base'}))
+                    .forEach(barrio => {
+                        const option = document.createElement('option');
+                        option.value = barrio;
+                        option.textContent = barrio;
+                        barrioSelect.appendChild(option);
+                    });
+                barrioSelect.disabled = false;
+            } else {
+                barrioSelect.disabled = true;
+                barrioSelect.innerHTML = '<option value="">Primero seleccione una comuna</option>';
+            }
+        }
+        
+        // Navegación entre módulos del formulario
+        let currentModule = 1;
+        
+        function showModule(n) {
+            currentModule = n;
+            
+            // Ocultar todos los módulos
+            document.querySelectorAll('.module').forEach(m => m.style.display = 'none');
+            
+            // Mostrar módulo actual
+            document.getElementById(`m${n}`).style.display = 'block';
+            
+            // Actualizar barra de progreso
+            const progressSteps = document.querySelectorAll('.progress-step');
+            const progressBar = document.getElementById('progressBar');
+            const width = ((n - 1) / 4) * 90;
+            progressBar.style.width = `${width}%`;
+            
+            progressSteps.forEach(step => {
+                const stepNum = parseInt(step.getAttribute('data-step'));
+                if (stepNum <= n) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+        }
+        
+        function nextModule(n) {
+            // Validaciones básicas por módulo
+            let isValid = true;
+            let errorMessage = '';
+            
+            if (n === 1) {
+                if (!document.getElementById('nombre').value.trim()) {
+                    isValid = false;
+                    errorMessage = 'Nombre completo es obligatorio';
+                }
+                if (!document.getElementById('cedula').value.trim()) {
+                    isValid = false;
+                    errorMessage = 'Cédula es obligatoria';
+                }
+                if (!document.getElementById('edad').value || document.getElementById('edad').value < 1) {
+                    isValid = false;
+                    errorMessage = 'Edad es obligatoria (mínimo 1 año)';
+                }
+                if (!document.getElementById('genero').value) {
+                    isValid = false;
+                    errorMessage = 'Género es obligatorio';
+                }
+                // Validar madre cabeza de hogar si es femenino
+                if (document.getElementById('genero').value === 'femenino' && 
+                    !document.getElementById('madreCabeza').value) {
+                    isValid = false;
+                    errorMessage = 'Para género femenino, debe indicar si es madre cabeza de hogar';
+                }
+            }
+            
+            if (n === 2 && !document.getElementById('telefono').value.trim()) {
+                isValid = false;
+                errorMessage = 'Teléfono es obligatorio';
+            }
+            
+            if (n === 4 && (!document.getElementById('comuna').value || !document.getElementById('barrio').value)) {
+                isValid = false;
+                errorMessage = 'Debe seleccionar una comuna y un barrio';
+            }
+            
+            if (isValid) {
+                showModule(n + 1);
+            } else {
+                alert(`❌ Por favor complete los campos obligatorios:\n\n${errorMessage}`);
+            }
+        }
+        
+        function prevModule(n) {
+            showModule(n - 1);
+        }
+        
+        // Finalizar registro
+        let consecutivo = JSON.parse(localStorage.getItem('censoConsecutivo')) || 1;
+        
+        function finalizarRegistro() {
+            // Validar aceptación de tratamiento de datos
+            if (!document.getElementById('acepto').checked) {
+                alert('Debe aceptar el tratamiento de datos para continuar.');
+                return;
+            }
+            
+            // Recoger datos del formulario
+            const registro = {
+                id: Date.now(),
+                codigoCenso: `CEN-${document.getElementById('cedula').value.substring(0,4)}-${String(consecutivo).padStart(4,'0')}`,
+                nombre: document.getElementById('nombre').value,
+                cedula: document.getElementById('cedula').value,
+                edad: document.getElementById('edad').value,
+                genero: document.getElementById('genero').options[document.getElementById('genero').selectedIndex].text,
+                madreCabeza: document.getElementById('genero').value === 'femenino' ? 
+                    document.getElementById('madreCabeza').options[document.getElementById('madreCabeza').selectedIndex].text : '',
+                telefono: document.getElementById('telefono').value,
+                direccion: document.getElementById('direccion').value || 'No especificada',
+                casaPropia: document.getElementById('casa').options[document.getElementById('casa').selectedIndex].text,
+                tipoVivienda: document.getElementById('casa').value === 'no' ? 
+                    document.getElementById('tipoVivienda').options[document.getElementById('tipoVivienda').selectedIndex].text : '',
+                trabajo: document.getElementById('trabajo').options[document.getElementById('trabajo').selectedIndex].text,
+                subcategoriaTrabajo: document.getElementById('trabajo').value === 'informal' ? 
+                    document.getElementById('subcategoriaTrabajo').options[document.getElementById('subcategoriaTrabajo').selectedIndex].text : '',
+                detalleTrabajo: document.getElementById('detalle').value || 'No especificado',
+                comuna: document.getElementById('comuna').options[document.getElementById('comuna').selectedIndex].text,
+                barrio: document.getElementById('barrio').value,
+                derechos: document.getElementById('derechos').options[document.getElementById('derechos').selectedIndex].text,
+                relacionInstitucion: document.getElementById('relacionInstitucion').options[document.getElementById('relacionInstitucion').selectedIndex].text,
+                fecha: new Date().toISOString(),
+                fechaFormateada: new Date().toLocaleDateString('es-CO', {
+                    year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                })
+            };
+            
+            // Guardar en base de datos
+            database.registros.push(registro);
+            consecutivo++;
+            
+            // Actualizar estadísticas
+            actualizarEstadisticas(registro);
+            
+            // Guardar en localStorage
+            guardarEnStorage();
+            
+            // Mostrar confirmación
+            document.getElementById('codigoCenso').textContent = registro.codigoCenso;
+            document.getElementById('successMessage').style.display = 'block';
+            
+            // Reiniciar formulario después de 5 segundos
+            setTimeout(() => {
+                document.getElementById('successMessage').style.display = 'none';
+                
+                // Limpiar todos los campos del formulario
+                document.querySelectorAll('#censo-tab input, #censo-tab select').forEach(el => {
+                    if (el.type !== 'button' && el.id !== 'acepto') {
+                        el.value = '';
+                    }
+                });
+                
+                document.getElementById('acepto').checked = false;
+                document.getElementById('barrio').innerHTML = '<option value="">Primero seleccione una comuna</option>';
+                document.getElementById('barrio').disabled = true;
+                
+                // Ocultar campos condicionales
+                document.getElementById('madreCabezaField').style.display = 'none';
+                document.getElementById('tipoViviendaField').style.display = 'none';
+                document.getElementById('subcategoriaTrabajoField').style.display = 'none';
+                
+                // Volver al módulo 1
+                showModule(1);
+                
+                // Si estamos en admin, actualizar
+                if (document.getElementById('admin-tab').classList.contains('active')) {
+                    actualizarPanelAdmin();
+                }
+            }, 5000);
+        }
+        
+        function actualizarEstadisticas(registro) {
+            // Actualizar contadores generales
+            database.estadisticas.total++;
+            
+            // Verificar si es de hoy
+            const hoy = new Date().toDateString();
+            const fechaRegistro = new Date(registro.fecha).toDateString();
+            if (fechaRegistro === hoy) database.estadisticas.hoy++;
+            
+            // Por género
+            if (registro.genero === 'Femenino') {
+                database.estadisticas.mujeres++;
+                database.estadisticas.porGenero.femenino++;
+            } else if (registro.genero === 'Masculino') {
+                database.estadisticas.porGenero.masculino++;
+            } else {
+                database.estadisticas.porGenero.otro++;
+            }
+            
+            // Por trabajo
+            if (registro.trabajo === 'Informal') {
+                database.estadisticas.informales++;
+            }
+            
+            // Por comuna
+            if (registro.comuna) {
+                const comunaKey = registro.comuna.trim();
+                if (!database.estadisticas.porComuna[comunaKey]) {
+                    database.estadisticas.porComuna[comunaKey] = 0;
+                }
+                database.estadisticas.porComuna[comunaKey]++;
+            }
+        }
+        
+        function guardarEnStorage() {
+            localStorage.setItem('censoRegistros', JSON.stringify(database.registros));
+            localStorage.setItem('censoEstadisticas', JSON.stringify(database.estadisticas));
+            localStorage.setItem('censoConsecutivo', consecutivo);
+        }
+        
+        // ============================================
+        // MAPA INTERACTIVO (MAPA 1 - CSS)
+        // ============================================
+        
+        function inicializarMapaCSS() {
+            const contenedor = document.getElementById('mapa-css');
+            contenedor.innerHTML = '';
+            
+            // Definición de las 13 comunas como rectángulos
+            const comunasMapa = [
+                { nombre: "Centro", top: "30%", left: "45%", width: "12%", height: "15%", color: "#0052B1" },
+                { nombre: "Calambeo", top: "25%", left: "60%", width: "15%", height: "12%", color: "#0066CC" },
+                { nombre: "San Simón", top: "40%", left: "55%", width: "14%", height: "13%", color: "#007BFF" },
+                { nombre: "Piedra Pintada", top: "50%", left: "40%", width: "16%", height: "14%", color: "#0052B1" },
+                { nombre: "Jordán", top: "35%", left: "25%", width: "13%", height: "16%", color: "#0066CC" },
+                { nombre: "Vergel", top: "55%", left: "20%", width: "15%", height: "15%", color: "#007BFF" },
+                { nombre: "Salado", top: "70%", left: "30%", width: "14%", height: "12%", color: "#0052B1" },
+                { nombre: "Simón Bolívar", top: "65%", left: "50%", width: "12%", height: "14%", color: "#0066CC" },
+                { nombre: "Picaleña Mirolindo", top: "45%", left: "70%", width: "16%", height: "13%", color: "#007BFF" },
+                { nombre: "Estadio", top: "20%", left: "35%", width: "11%", height: "10%", color: "#0052B1" },
+                { nombre: "Ferias", top: "15%", left: "50%", width: "10%", height: "11%", color: "#0066CC" },
+                { nombre: "Las Brisas", top: "75%", left: "10%", width: "14%", height: "13%", color: "#007BFF" },
+                { nombre: "Boquerón", top: "60%", left: "75%", width: "13%", height: "15%", color: "#0052B1" }
+            ];
+            
+            comunasMapa.forEach(comuna => {
+                const div = document.createElement('div');
+                div.className = 'comuna-css';
+                div.textContent = comuna.nombre;
+                div.style.top = comuna.top;
+                div.style.left = comuna.left;
+                div.style.width = comuna.width;
+                div.style.height = comuna.height;
+                div.style.background = `linear-gradient(135deg, ${comuna.color}20, ${comuna.color}40)`;
+                div.style.borderColor = comuna.color;
+                div.style.color = comuna.color;
+                
+                // Eventos para tooltip y selección
+                div.addEventListener('mouseenter', (e) => mostrarTooltipMapa(e, comuna.nombre));
+                div.addEventListener('mouseleave', ocultarTooltipMapa);
+                div.addEventListener('click', () => seleccionarComunaMapa(comuna.nombre));
+                
+                contenedor.appendChild(div);
+            });
+            
+            console.log('✅ Mapa CSS inicializado con 13 áreas interactivas.');
+        }
+        
+        // Mostrar tooltip sobre una comuna en el mapa
+        function mostrarTooltipMapa(event, nombreComuna) {
+            const tooltip = document.getElementById('mapTooltip');
+            
+            // Buscar registros para esta comuna (búsqueda exacta)
+            const registros = database.registros.filter(r => {
+                if (!r.comuna) return false;
+                // Comparar eliminando espacios y normalizando
+                const comunaRegistro = r.comuna.trim();
+                const comunaMapa = nombreComuna.trim();
+                return comunaRegistro === comunaMapa;
+            }).length;
+            
+            const barrios = barriosPorComuna[nombreComuna]?.length || 0;
+            const densidad = barrios > 0 ? (registros / barrios).toFixed(2) : "0.00";
+            
+            tooltip.innerHTML = `
+                <div style="font-weight:bold; margin-bottom:5px; color:#0052B1;">${nombreComuna}</div>
+                <div>🏘️ <strong>Barrios:</strong> ${barrios}</div>
+                <div>📋 <strong>Registros:</strong> ${registros}</div>
+                <div>📈 <strong>Densidad:</strong> ${densidad} reg/barrio</div>
+                <div style="font-size:11px; margin-top:5px; color:#888;">Click para seleccionar</div>
+            `;
+            
+            tooltip.style.left = (event.clientX + 15) + 'px';
+            tooltip.style.top = (event.clientY - 15) + 'px';
+            tooltip.style.display = 'block';
+            
+            // Resaltar visualmente la comuna
+            document.querySelectorAll('.comuna-css').forEach(el => {
+                if (el.textContent === nombreComuna) {
+                    el.style.boxShadow = '0 0 15px rgba(0, 82, 177, 0.7)';
+                }
+            });
+        }
+        
+        // Ocultar tooltip del mapa
+        function ocultarTooltipMapa() {
+            const tooltip = document.getElementById('mapTooltip');
+            tooltip.style.display = 'none';
+            
+            // Quitar resaltado de todas las comunas
+            document.querySelectorAll('.comuna-css').forEach(el => {
+                el.style.boxShadow = 'none';
+            });
+        }
+        
+        // Seleccionar una comuna en el mapa
+        function seleccionarComunaMapa(nombreComuna) {
+            console.log(`🔍 Buscando registros para comuna: "${nombreComuna}"`);
+            
+            // Buscar registros exactos para esta comuna
+            const registrosComuna = database.registros.filter(r => {
+                if (!r.comuna) return false;
+                const comunaRegistro = r.comuna.trim();
+                const comunaMapa = nombreComuna.trim();
+                return comunaRegistro === comunaMapa;
+            });
+            
+            console.log(`📊 Registros encontrados para ${nombreComuna}: ${registrosComuna.length}`);
+            
+            // Mostrar depuración si no encuentra registros
+            if (registrosComuna.length === 0) {
+                console.log(`🔍 Todos los registros disponibles:`);
+                database.registros.forEach((r, i) => {
+                    console.log(`${i+1}. ${r.nombre} - Comuna: "${r.comuna}" (${typeof r.comuna})`);
+                });
+            }
+            
+            // Actualizar los indicadores
+            document.getElementById('comunaSeleccionada').textContent = nombreComuna;
+            document.getElementById('barriosComuna').textContent = barriosPorComuna[nombreComuna]?.length || 0;
+            document.getElementById('registrosComuna').textContent = registrosComuna.length;
+            
+            const densidad = barriosPorComuna[nombreComuna]?.length > 0 ? 
+                (registrosComuna.length / barriosPorComuna[nombreComuna].length).toFixed(2) : "0.00";
+            document.getElementById('densidadComuna').textContent = densidad;
+            
+            console.log(`✅ Comuna seleccionada: ${nombreComuna} (${registrosComuna.length} registros)`);
+        }
+        
+        // Generar reporte de comuna seleccionada
+        function generarReporteComuna() {
+            const comuna = document.getElementById('comunaSeleccionada').textContent;
+            if (comuna === '-') {
+                alert('Por favor selecciona una comuna en el mapa primero.');
+                return;
+            }
+            
+            // Buscar registros exactos
+            const registros = database.registros.filter(r => {
+                if (!r.comuna) return false;
+                const comunaRegistro = r.comuna.trim();
+                const comunaMapa = comuna.trim();
+                return comunaRegistro === comunaMapa;
+            });
+            
+            if (registros.length === 0) {
+                alert(`No hay registros en la comuna ${comuna}.`);
+                return;
+            }
+            
+            let reporte = `📊 REPORTE DE LA COMUNA: ${comuna}\n\n`;
+            reporte += `📅 Fecha de generación: ${new Date().toLocaleDateString('es-CO')}\n`;
+            reporte += `📋 Total de registros: ${registros.length}\n`;
+            reporte += `🏘️ Barrios en la comuna: ${barriosPorComuna[comuna]?.length || 0}\n\n`;
+            
+            // Estadísticas básicas
+            const hombres = registros.filter(r => r.genero === 'Masculino').length;
+            const mujeres = registros.filter(r => r.genero === 'Femenino').length;
+            const informales = registros.filter(r => r.trabajo === 'Informal').length;
+            
+            reporte += `👥 ESTADÍSTICAS DEMOGRÁFICAS:\n`;
+            reporte += `• Hombres: ${hombres} (${((hombres/registros.length)*100).toFixed(1)}%)\n`;
+            reporte += `• Mujeres: ${mujeres} (${((mujeres/registros.length)*100).toFixed(1)}%)\n`;
+            reporte += `• Madres cabeza de hogar: ${registros.filter(r => r.madreCabeza === 'Sí').length}\n\n`;
+            
+            reporte += `💼 ESTADÍSTICAS LABORALES:\n`;
+            reporte += `• Trabajo informal: ${informales} (${((informales/registros.length)*100).toFixed(1)}%)\n`;
+            reporte += `• Trabajo formal: ${registros.filter(r => r.trabajo === 'Formal').length}\n`;
+            reporte += `• Desempleados: ${registros.filter(r => r.trabajo === 'Desempleado').length}\n\n`;
+            
+            reporte += `🏠 VIVIENDA:\n`;
+            reporte += `• Casa propia: ${registros.filter(r => r.casaPropia === 'Sí').length}\n`;
+            reporte += `• En arriendo: ${registros.filter(r => r.tipoVivienda === 'arriendo').length}\n`;
+            
+            // Agregar lista de barrios con registros
+            reporte += `\n📋 REGISTROS POR BARRIO:\n`;
+            const barriosConRegistros = {};
+            registros.forEach(r => {
+                const barrio = r.barrio || 'Sin barrio especificado';
+                if (!barriosConRegistros[barrio]) {
+                    barriosConRegistros[barrio] = 0;
+                }
+                barriosConRegistros[barrio]++;
+            });
+            
+            Object.entries(barriosConRegistros).forEach(([barrio, count]) => {
+                reporte += `• ${barrio}: ${count} registro(s)\n`;
+            });
+            
+            alert(reporte);
+        }
+        
+        // Ver detalle completo de la comuna (ir a administración)
+        function verDetalleComuna() {
+            const comuna = document.getElementById('comunaSeleccionada').textContent;
+            if (comuna === '-') {
+                alert('Por favor selecciona una comuna en el mapa primero.');
+                return;
+            }
+            
+            // Cambiar a pestaña de admin y filtrar
+            switchTab('admin');
+            document.getElementById('searchInput').value = comuna;
+            buscarRegistros();
+        }
+        
+        // ============================================
+        // PANEL DE ADMINISTRACIÓN
+        // ============================================
+        
+        function actualizarPanelAdmin() {
+            // Actualizar estadísticas principales
+            document.getElementById('totalRegistros').textContent = database.estadisticas.total;
+            document.getElementById('registrosHoy').textContent = database.estadisticas.hoy;
+            document.getElementById('mujeresRegistradas').textContent = database.estadisticas.mujeres;
+            document.getElementById('trabajoInformal').textContent = database.estadisticas.informales;
+            
+            // Actualizar tabla de registros
+            const tbody = document.getElementById('registrosBody');
+            tbody.innerHTML = '';
+            
+            if (database.registros.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="padding:20px; text-align:center; color:#666;">
+                            No hay registros aún. Comienza capturando datos en la pestaña "Nuevo Censo".
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('contadorRegistros').textContent = 'Mostrando 0 registros';
+                return;
+            }
+            
+            // Mostrar últimos 15 registros
+            const ultimosRegistros = [...database.registros].reverse().slice(0, 15);
+            
+            ultimosRegistros.forEach(registro => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${registro.codigoCenso}</td>
+                    <td>${registro.nombre}</td>
+                    <td>${registro.cedula}</td>
+                    <td>${registro.comuna}</td>
+                    <td>${new Date(registro.fecha).toLocaleDateString()}</td>
+                    <td>
+                        <button onclick="verDetalleRegistro(${registro.id})" class="btn-primary">
+                            👁️ Ver
+                        </button>
+                    </td>
+                    <td>
+                        <button onclick="eliminarRegistroDirecto(${registro.id})" class="btn-danger">
+                            🗑️ Eliminar
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            document.getElementById('contadorRegistros').textContent = 
+                `Mostrando ${ultimosRegistros.length} de ${database.registros.length} registros`;
+        }
+        
+        function buscarRegistros() {
+            const busqueda = document.getElementById('searchInput').value.toLowerCase();
+            const tbody = document.getElementById('registrosBody');
+            tbody.innerHTML = '';
+            
+            const resultados = database.registros.filter(registro => 
+                registro.codigoCenso.toLowerCase().includes(busqueda) ||
+                registro.nombre.toLowerCase().includes(busqueda) ||
+                registro.cedula.toLowerCase().includes(busqueda) ||
+                registro.comuna.toLowerCase().includes(busqueda)
+            ).reverse();
+            
+            if (resultados.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="padding:20px; text-align:center; color:#666;">
+                            No se encontraron registros con esos criterios.
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('contadorRegistros').textContent = 'Encontrados 0 registros';
+                return;
+            }
+            
+            resultados.forEach(registro => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${registro.codigoCenso}</td>
+                    <td>${registro.nombre}</td>
+                    <td>${registro.cedula}</td>
+                    <td>${registro.comuna}</td>
+                    <td>${new Date(registro.fecha).toLocaleDateString()}</td>
+                    <td>
+                        <button onclick="verDetalleRegistro(${registro.id})" class="btn-primary">
+                            👁️ Ver
+                        </button>
+                    </td>
+                    <td>
+                        <button onclick="eliminarRegistroDirecto(${registro.id})" class="btn-danger">
+                            🗑️ Eliminar
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            document.getElementById('contadorRegistros').textContent = `Encontrados ${resultados.length} registros`;
+        }
+        
+        // ============================================
+        // FUNCIONES DE ELIMINACIÓN DE REGISTROS
+        // ============================================
+        
+        // FUNCIÓN verDetalleRegistro ACTUALIZADA
+        function verDetalleRegistro(id) {
+            const registro = database.registros.find(r => r.id === id);
+            if (!registro) return;
+            
+            let detalles = `📄 DETALLE COMPLETO DEL REGISTRO\n\n`;
+            detalles += `📋 Código: ${registro.codigoCenso}\n`;
+            detalles += `👤 Nombre: ${registro.nombre}\n`;
+            detalles += `🆔 Cédula: ${registro.cedula}\n`;
+            detalles += `🎂 Edad: ${registro.edad}\n`;
+            detalles += `⚧️ Género: ${registro.genero}\n`;
+            if (registro.madreCabeza) detalles += `👩‍👧‍👦 Madre cabeza de hogar: ${registro.madreCabeza}\n`;
+            detalles += `📞 Teléfono: ${registro.telefono}\n`;
+            detalles += `🏠 Dirección: ${registro.direccion}\n`;
+            detalles += `🏡 Casa propia: ${registro.casaPropia}\n`;
+            if (registro.tipoVivienda) detalles += `🏚️ Tipo de vivienda: ${registro.tipoVivienda}\n`;
+            detalles += `💼 Trabajo: ${registro.trabajo}\n`;
+            if (registro.subcategoriaTrabajo) detalles += `📊 Subcategoría: ${registro.subcategoriaTrabajo}\n`;
+            detalles += `📝 Detalle: ${registro.detalleTrabajo}\n`;
+            detalles += `🗺️ Comuna: ${registro.comuna}\n`;
+            detalles += `🏘️ Barrio: ${registro.barrio}\n`;
+            detalles += `⚖️ Derechos vulnerados: ${registro.derechos}\n`;
+            detalles += `🏛️ Relación con institución: ${registro.relacionInstitucion}\n`;
+            detalles += `📅 Fecha de registro: ${registro.fechaFormateada}\n\n`;
+            detalles += `══════════════════════════════════════\n`;
+            detalles += `¿Qué desea hacer con este registro?\n`;
+            
+            // Usar confirm con opciones personalizadas
+            const opcion = confirm(detalles + "\nClick en ACEPTAR para volver a la lista, CANCELAR para permanecer aquí.");
+            
+            if (opcion) {
+                // Si hace clic en Aceptar, simplemente volver (no hacer nada más)
+                console.log('Volviendo a la lista de registros...');
+            } else {
+                // Si hace clic en Cancelar, mostrar opción para eliminar
+                const eliminar = confirm('¿Desea ELIMINAR este registro?\n\nClick en ACEPTAR para eliminar, CANCELAR para conservarlo.');
+                if (eliminar) {
+                    eliminarRegistroDirecto(id);
+                }
+            }
+        }
+        
+        // NUEVA FUNCIÓN: Eliminar registro directamente desde la tabla
+        function eliminarRegistroDirecto(id) {
+            const registro = database.registros.find(r => r.id === id);
+            if (!registro) return;
+            
+            if (confirm(`⚠️ ¿Está seguro de eliminar el registro?\n\nCódigo: ${registro.codigoCenso}\nNombre: ${registro.nombre}\nCédula: ${registro.cedula}\n\nEsta acción no se puede deshacer.`)) {
+                const index = database.registros.findIndex(r => r.id === id);
+                if (index !== -1) {
+                    // Eliminar el registro
+                    database.registros.splice(index, 1);
+                    
+                    // Recalcular estadísticas
+                    recalcularEstadisticas();
+                    
+                    // Guardar cambios
+                    guardarEnStorage();
+                    
+                    // Actualizar panel
+                    actualizarPanelAdmin();
+                    
+                    alert('✅ Registro eliminado correctamente.');
+                }
+            }
+        }
+        
+        // FUNCIÓN PARA RECALCULAR ESTADÍSTICAS:
+        function recalcularEstadisticas() {
+            // Reiniciar estadísticas
+            database.estadisticas = {
+                total: 0, hoy: 0, mujeres: 0, informales: 0,
+                porComuna: {}, porGenero: { masculino: 0, femenino: 0, otro: 0 }
+            };
+            
+            // Recalcular todo desde cero
+            database.registros.forEach(registro => {
+                database.estadisticas.total++;
+                
+                const hoy = new Date().toDateString();
+                const fechaRegistro = new Date(registro.fecha).toDateString();
+                if (fechaRegistro === hoy) database.estadisticas.hoy++;
+                
+                if (registro.genero === 'Femenino') {
+                    database.estadisticas.mujeres++;
+                    database.estadisticas.porGenero.femenino++;
+                } else if (registro.genero === 'Masculino') {
+                    database.estadisticas.porGenero.masculino++;
+                } else {
+                    database.estadisticas.porGenero.otro++;
+                }
+                
+                if (registro.trabajo === 'Informal') {
+                    database.estadisticas.informales++;
+                }
+                
+                if (registro.comuna) {
+                    const comunaKey = registro.comuna.trim();
+                    if (!database.estadisticas.porComuna[comunaKey]) {
+                        database.estadisticas.porComuna[comunaKey] = 0;
+                    }
+                    database.estadisticas.porComuna[comunaKey]++;
+                }
+            });
+        }
+        
+        // ============================================
+        // NUEVA FUNCIÓN: EXPORTAR A EXCEL MEJORADA
+        // ============================================
+        
+        // Función para exportar TODOS los registros a Excel con formato de tabla
+        function exportarAExcel() {
+            if (database.registros.length === 0) {
+                alert('No hay registros para exportar.');
+                return;
+            }
+            
+            // Crear el contenido CSV con separadores correctos
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // BOM para Excel
+            
+            // Encabezados con separador punto y coma (mejor para Excel)
+            const headers = [
+                "Código Censo",
+                "Nombre Completo",
+                "Cédula",
+                "Edad",
+                "Género",
+                "Madre Cabeza Hogar",
+                "Teléfono",
+                "Dirección",
+                "Casa Propia",
+                "Tipo Vivienda",
+                "Trabajo",
+                "Subcategoría Trabajo",
+                "Detalle Trabajo",
+                "Comuna",
+                "Barrio",
+                "Derechos Vulnerados",
+                "Relación Institución",
+                "Fecha Registro"
+            ];
+            
+            csvContent += headers.join(";") + "\r\n";
+            
+            // Agregar cada registro con formato correcto
+            database.registros.forEach(registro => {
+                const row = [
+                    registro.codigoCenso || "",
+                    registro.nombre || "",
+                    registro.cedula || "",
+                    registro.edad || "",
+                    registro.genero || "",
+                    registro.madreCabeza || "",
+                    registro.telefono || "",
+                    registro.direccion || "",
+                    registro.casaPropia || "",
+                    registro.tipoVivienda || "",
+                    registro.trabajo || "",
+                    registro.subcategoriaTrabajo || "",
+                    registro.detalleTrabajo || "",
+                    registro.comuna || "",
+                    registro.barrio || "",
+                    registro.derechos || "",
+                    registro.relacionInstitucion || "",
+                    registro.fechaFormateada || ""
+                ];
+                
+                // Escapar comillas y puntos y comas dentro de los datos
+                const escapedRow = row.map(cell => {
+                    // Convertir a string y escapar caracteres especiales
+                    const cellStr = String(cell);
+                    if (cellStr.includes(';') || cellStr.includes('"') || cellStr.includes('\n') || cellStr.includes('\r')) {
+                        return '"' + cellStr.replace(/"/g, '""') + '"';
+                    }
+                    return cellStr;
+                });
+                
+                csvContent += escapedRow.join(";") + "\r\n";
+            });
+            
+            // Crear enlace de descarga
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            
+            // Nombre del archivo con fecha
+            const fecha = new Date().toISOString().slice(0,10);
+            link.setAttribute("download", `Censo_Territorial_${fecha}.csv`);
+            document.body.appendChild(link);
+            
+            // Descargar el archivo
+            link.click();
+            document.body.removeChild(link);
+            
+            alert(`✅ Se exportaron ${database.registros.length} registros a Excel.\n\nEl archivo se descargará automáticamente.\n\n📌 IMPORTANTE: Al abrir en Excel, selecciona "Datos" → "Desde texto/CSV" y especifica el separador como "punto y coma (;)"`);
+        }
+        
+        // Función para exportar resultados filtrados a Excel
+        function exportarFiltradosExcel() {
+            const busqueda = document.getElementById('searchInput').value.toLowerCase();
+            
+            let registrosAExportar;
+            
+            if (busqueda.trim() === '') {
+                // Si no hay búsqueda, exportar todos
+                registrosAExportar = database.registros;
+            } else {
+                // Filtrar según la búsqueda actual
+                registrosAExportar = database.registros.filter(registro => 
+                    registro.codigoCenso.toLowerCase().includes(busqueda) ||
+                    registro.nombre.toLowerCase().includes(busqueda) ||
+                    registro.cedula.toLowerCase().includes(busqueda) ||
+                    registro.comuna.toLowerCase().includes(busqueda)
+                );
+            }
+            
+            if (registrosAExportar.length === 0) {
+                alert('No hay registros para exportar.');
+                return;
+            }
+            
+            // Crear el contenido CSV con separadores correctos
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // BOM para Excel
+            
+            // Encabezados con separador punto y coma
+            const headers = [
+                "Código Censo",
+                "Nombre Completo",
+                "Cédula",
+                "Edad",
+                "Género",
+                "Madre Cabeza Hogar",
+                "Teléfono",
+                "Dirección",
+                "Casa Propia",
+                "Tipo Vivienda",
+                "Trabajo",
+                "Subcategoría Trabajo",
+                "Detalle Trabajo",
+                "Comuna",
+                "Barrio",
+                "Derechos Vulnerados",
+                "Relación Institución",
+                "Fecha Registro"
+            ];
+            
+            csvContent += headers.join(";") + "\r\n";
+            
+            // Agregar cada registro con formato correcto
+            registrosAExportar.forEach(registro => {
+                const row = [
+                    registro.codigoCenso || "",
+                    registro.nombre || "",
+                    registro.cedula || "",
+                    registro.edad || "",
+                    registro.genero || "",
+                    registro.madreCabeza || "",
+                    registro.telefono || "",
+                    registro.direccion || "",
+                    registro.casaPropia || "",
+                    registro.tipoVivienda || "",
+                    registro.trabajo || "",
+                    registro.subcategoriaTrabajo || "",
+                    registro.detalleTrabajo || "",
+                    registro.comuna || "",
+                    registro.barrio || "",
+                    registro.derechos || "",
+                    registro.relacionInstitucion || "",
+                    registro.fechaFormateada || ""
+                ];
+                
+                // Escapar comillas y puntos y comas dentro de los datos
+                const escapedRow = row.map(cell => {
+                    const cellStr = String(cell);
+                    if (cellStr.includes(';') || cellStr.includes('"') || cellStr.includes('\n') || cellStr.includes('\r')) {
+                        return '"' + cellStr.replace(/"/g, '""') + '"';
+                    }
+                    return cellStr;
+                });
+                
+                csvContent += escapedRow.join(";") + "\r\n";
+            });
+            
+            // Nombre del archivo con filtro
+            let nombreArchivo = `Censo_Territorial_${new Date().toISOString().slice(0,10)}`;
+            if (busqueda.trim() !== '') {
+                nombreArchivo += `_Filtro_${busqueda.substring(0, 20).replace(/[^a-z0-9]/gi, '_')}`;
+            }
+            
+            // Crear enlace de descarga
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `${nombreArchivo}.csv`);
+            document.body.appendChild(link);
+            
+            // Descargar el archivo
+            link.click();
+            document.body.removeChild(link);
+            
+            alert(`✅ Se exportaron ${registrosAExportar.length} registros a Excel.\n\nEl archivo se descargará automáticamente.\n\n📌 IMPORTANTE: Al abrir en Excel, selecciona "Datos" → "Desde texto/CSV" y especifica el separador como "punto y coma (;)"`);
+        }
+        
+        // ============================================
+        // INICIALIZACIÓN DEL SISTEMA
+        // ============================================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar formulario
+            inicializarComunasSelect();
+            showModule(1);
+            
+            // Configurar eventos condicionales del formulario
+            document.getElementById('genero').addEventListener('change', function() {
+                document.getElementById('madreCabezaField').style.display = 
+                    this.value === 'femenino' ? 'block' : 'none';
+            });
+            
+            document.getElementById('casa').addEventListener('change', function() {
+                document.getElementById('tipoViviendaField').style.display = 
+                    this.value === 'no' ? 'block' : 'none';
+            });
+            
+            document.getElementById('trabajo').addEventListener('change', function() {
+                document.getElementById('subcategoriaTrabajoField').style.display = 
+                    this.value === 'informal' ? 'block' : 'none';
+            });
+            
+            // Configurar búsqueda en tiempo real
+            document.getElementById('searchInput').addEventListener('input', buscarRegistros);
+            
+            // Cargar consecutivo desde localStorage
+            const ultimoRegistro = database.registros[database.registros.length - 1];
+            if (ultimoRegistro && ultimoRegistro.codigoCenso) {
+                const match = ultimoRegistro.codigoCenso.match(/CEN-\d{4}-(\d+)/);
+                if (match) consecutivo = parseInt(match[1]) + 1;
+            }
+            
+            // SOLO CREAR DATOS DE PRUEBA SI NO HAY NINGÚN REGISTRO
+            if (database.registros.length === 0 && localStorage.getItem('datosPruebaCreados') !== 'true') {
+                console.log('🔧 Creando datos de prueba iniciales...');
+                
+                const fechaBase = new Date();
+                for (let i = 1; i <= 5; i++) {
+                    const registroPrueba = {
+                        id: Date.now() + i,
+                        codigoCenso: `CEN-TEST-${i.toString().padStart(4,'0')}`,
+                        nombre: `Persona Prueba ${i}`,
+                        cedula: `1000000${i}`,
+                        edad: 25 + i,
+                        genero: i % 2 === 0 ? 'Femenino' : 'Masculino',
+                        madreCabeza: i % 2 === 0 ? 'Sí' : '',
+                        telefono: `300123456${i}`,
+                        direccion: `Calle Prueba ${i}, Ciudad`,
+                        casaPropia: i % 3 === 0 ? 'Sí' : 'No',
+                        tipoVivienda: i % 3 === 0 ? '' : 'arriendo',
+                        trabajo: i % 2 === 0 ? 'Formal' : 'Informal',
+                        subcategoriaTrabajo: i % 2 === 0 ? '' : 'vendedor',
+                        detalleTrabajo: 'Ocupación de prueba para el sistema',
+                        comuna: 'Picaleña Mirolindo',
+                        barrio: barriosPorComuna['Picaleña Mirolindo'][i % barriosPorComuna['Picaleña Mirolindo'].length],
+                        derechos: 'ninguno',
+                        relacionInstitucion: 'ninguna',
+                        fecha: new Date(fechaBase.getTime() - i * 86400000).toISOString(),
+                        fechaFormateada: new Date(fechaBase.getTime() - i * 86400000).toLocaleDateString('es-CO')
+                    };
+                    
+                    database.registros.push(registroPrueba);
+                    actualizarEstadisticas(registroPrueba);
+                }
+                
+                // Marcar que ya se crearon los datos de prueba
+                localStorage.setItem('datosPruebaCreados', 'true');
+                
+                // Guardar datos de prueba
+                guardarEnStorage();
+                console.log(`✅ 5 registros de prueba creados (solo una vez)`);
+            }
+            
+            console.log('✅ Sistema de Censo Territorial inicializado.');
+            console.log(`📊 Registros totales: ${database.registros.length}`);
+            
+            // Actualizar panel de administración
+            actualizarPanelAdmin();
+        });
+    </script>
+</body>
+</html>
