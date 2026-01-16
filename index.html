@@ -61,6 +61,7 @@
             display: none;
             padding: 25px;
             animation: fadeIn 0.4s ease;
+            overflow: hidden !important;
         }
         .tab-content.active {
             display: block;
@@ -117,9 +118,12 @@
         /* ===== MÓDULOS DEL FORMULARIO ===== */
         .module {
             display: none;
+            padding-bottom: 10px;
         }
         .module.active {
             display: block;
+            animation: slideUp 0.3s ease;
+            position: relative;
         }
         .module-title {
             color: #0052B1;
@@ -129,13 +133,14 @@
             font-size: 1.4em;
         }
         
-        /* ===== ESTILOS DE FORMULARIO (TAMAÑOS UNIFORMES) ===== */
+        /* ===== ESTILOS DE FORMULARIO ===== */
         label {
             display: block;
             margin-top: 18px;
             font-weight: 600;
             color: #444;
-            font-size: 15px; /* TAMAÑO UNIFORME PARA TODOS LOS LABELS */
+            font-size: 15px;
+            clear: both;
         }
         input, select {
             width: 100%;
@@ -147,6 +152,8 @@
             box-sizing: border-box;
             transition: all 0.3s;
             background: #f9f9f9;
+            display: block;
+            clear: both;
         }
         input:focus, select:focus {
             border-color: #0052B1;
@@ -155,7 +162,7 @@
             box-shadow: 0 0 0 3px rgba(0, 82, 177, 0.15);
         }
         
-        /* Estilo específico para campo numérico de edad (sin flechas) */
+        /* Estilo específico para campo numérico de edad */
         #edad {
             -moz-appearance: textfield;
         }
@@ -202,7 +209,7 @@
             animation: slideIn 0.3s ease;
         }
         
-        /* ===== MAPA INTERACTIVO (MAPA 1 - CSS) ===== */
+        /* ===== MAPA INTERACTIVO ===== */
         #mapa-css {
             width: 100%;
             height: 500px;
@@ -227,7 +234,8 @@
             font-size: 12px;
             overflow: hidden;
             box-sizing: border-box;
-            z-index: 5; /* ASEGURA QUE TODAS ESTÉN AL MISMO NIVEL */
+            z-index: 5;
+            text-shadow: 0 0 2px white, 0 0 2px white;
         }
         .comuna-css:hover {
             background: rgba(0, 82, 177, 0.3);
@@ -345,24 +353,378 @@
             margin-right: 5px;
         }
         
-        /* ===== RESPONSIVE ===== */
+        /* ===== RESPONSIVE PARA MÓVILES ===== */
         @media (max-width: 768px) {
-            .container, header {
-                max-width: 95%;
-                padding: 15px;
+            body {
+                padding: 10px;
             }
+            
+            header {
+                max-width: 100%;
+                padding: 15px;
+                margin: 10px auto;
+                border-radius: 10px;
+            }
+            
+            header h1 {
+                font-size: 1.3em;
+                margin: 10px 0;
+            }
+            
+            header h2 {
+                font-size: 1.1em;
+            }
+            
+            header h3 {
+                font-size: 1em;
+            }
+            
+            .container {
+                max-width: 100%;
+                padding: 15px;
+                margin: 0 auto 20px auto;
+                border-radius: 10px;
+            }
+            
+            /* Tabs en móvil apilados verticalmente */
             .tabs {
                 flex-direction: column;
+                border-radius: 8px;
+                margin-bottom: 15px;
             }
+            
             .tab {
+                padding: 12px;
                 border-right: none;
                 border-bottom: 1px solid #dee2e6;
+                text-align: left;
+                font-size: 14px;
             }
+            
+            .tab-content {
+                padding: 15px;
+            }
+            
+            /* TÍTULOS DE MÓDULOS - REDUCIDOS PARA MÓVIL */
+            .module-title {
+                font-size: 1.1em !important;
+                padding-bottom: 10px !important;
+                margin-bottom: 20px !important;
+                line-height: 1.3 !important;
+                border-bottom: 2px solid #eaeaea !important;
+            }
+            
+            /* Módulos con mejor espaciado */
+            .module {
+                padding-top: 5px !important;
+            }
+            
+            .module label {
+                margin-top: 15px !important;
+                margin-bottom: 5px !important;
+                font-size: 14px !important;
+            }
+            
+            .module input, 
+            .module select {
+                margin-top: 3px !important;
+                margin-bottom: 8px !important;
+            }
+            
+            /* Barra de progreso - ajustar para móvil */
+            .progress-container {
+                margin-bottom: 15px !important;
+                padding: 0 5px;
+            }
+            
+            .progress-step {
+                width: 35px;
+                height: 35px;
+                font-size: 14px;
+            }
+            
+            .progress-label {
+                font-size: 9px !important;
+                top: 40px;
+                white-space: nowrap;
+                width: 45px !important;
+                left: 50%;
+                transform: translateX(-50%);
+                line-height: 1.1 !important;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            
+            .progress-bar {
+                top: 17px;
+                left: 8% !important;
+                width: 84% !important;
+            }
+            
+            /* Layout de campos en fila (para cédula/edad) */
+            .module > div[style*="display:flex"] {
+                flex-direction: column !important;
+                gap: 0 !important;
+                margin-bottom: 5px !important;
+            }
+            
+            .module > div[style*="display:flex"] > div {
+                flex: 1 0 100% !important;
+                margin-bottom: 15px !important;
+            }
+            
+            /* Botones */
+            button {
+                padding: 12px 20px;
+                font-size: 15px;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .actions {
+                flex-direction: column !important;
+                gap: 10px !important;
+                margin-top: 20px !important;
+                padding-top: 15px !important;
+                border-top: 1px solid #eee !important;
+            }
+            
+            .actions button {
+                margin: 0 !important;
+            }
+            
+            /* Mapa interactivo - reducir altura */
+            #mapa-css {
+                height: 350px;
+                border-width: 1px;
+            }
+            
+            /* Comunas del mapa - hacer más legibles en móvil */
+            .comuna-css {
+                font-size: 9px !important;
+                font-weight: 600;
+                padding: 2px;
+                text-align: center;
+                word-break: break-word;
+                overflow-wrap: break-word;
+                line-height: 1.2;
+            }
+            
+            /* Ajustar posiciones de comunas para móvil */
+            .comuna-css[style*="Centro"] { top: 15% !important; left: 40% !important; width: 22% !important; height: 14% !important; }
+            .comuna-css[style*="Calambeo"] { top: 10% !important; left: 65% !important; width: 25% !important; height: 12% !important; }
+            .comuna-css[style*="San Simón"] { top: 28% !important; left: 60% !important; width: 26% !important; height: 14% !important; }
+            .comuna-css[style*="Piedra Pintada"] { top: 42% !important; left: 35% !important; width: 32% !important; height: 14% !important; }
+            .comuna-css[style*="Jordán"] { top: 30% !important; left: 10% !important; width: 28% !important; height: 17% !important; }
+            .comuna-css[style*="Vergel"] { top: 52% !important; left: 5% !important; width: 32% !important; height: 15% !important; }
+            .comuna-css[style*="Salado"] { top: 68% !important; left: 20% !important; width: 28% !important; height: 13% !important; }
+            .comuna-css[style*="Simón Bolívar"] { top: 62% !important; left: 45% !important; width: 22% !important; height: 14% !important; }
+            .comuna-css[style*="Picaleña Mirolindo"] { top: 42% !important; left: 70% !important; width: 30% !important; height: 14% !important; }
+            .comuna-css[style*="Estadio"] { top: 5% !important; left: 30% !important; width: 22% !important; height: 11% !important; }
+            .comuna-css[style*="Ferias"] { top: 0% !important; left: 55% !important; width: 20% !important; height: 11% !important; }
+            .comuna-css[style*="Las Brisas"] { top: 72% !important; left: 0% !important; width: 28% !important; height: 14% !important; }
+            .comuna-css[style*="Boquerón"] { top: 58% !important; left: 70% !important; width: 28% !important; height: 16% !important; }
+            
+            /* Tooltip del mapa - ajustar para móvil */
+            .map-tooltip {
+                position: fixed !important;
+                top: 50% !important;
+                left: 50% !important;
+                transform: translate(-50%, -50%) !important;
+                width: 80% !important;
+                max-width: 300px;
+                z-index: 9999;
+            }
+            
+            /* Grid de estadísticas - 2 columnas */
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .stat-card {
+                padding: 15px;
+                min-height: 80px;
+            }
+            
+            .stat-card h3 {
+                font-size: 13px;
+                margin-bottom: 8px;
+            }
+            
+            .stat-card .number {
+                font-size: 1.8em;
+            }
+            
+            /* Botones especiales en mapa y admin */
+            .btn-export, button[style*="min-width:200px"] {
+                min-width: 100% !important;
+                margin: 5px 0 !important;
+            }
+            
+            /* Tabla de administración - hacer scrollable */
+            .data-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .data-table th,
+            .data-table td {
+                padding: 10px 8px;
+                font-size: 13px;
+            }
+            
+            /* Checkbox de aceptación */
+            .checkbox-container {
+                padding: 15px !important;
+                flex-direction: row !important;
+                align-items: center !important;
+            }
+            
+            .checkbox-container input {
+                width: 20px !important;
+                height: 20px;
+                margin-right: 10px;
+                margin-bottom: 0;
+                transform: scale(1.2);
+            }
+            
+            .checkbox-container label {
+                margin-top: 0;
+                font-size: 13px;
+                line-height: 1.4;
+            }
+            
+            /* Mensaje de éxito */
+            .success-message {
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+            
+            .codigo-censo {
+                font-size: 1.2em;
+                padding: 8px;
+                word-break: break-all;
+            }
+            
+            /* Barra de búsqueda */
+            #searchInput {
+                padding: 12px;
+                font-size: 15px;
+            }
+            
+            /* Contador de registros */
+            #contadorRegistros {
+                font-size: 14px;
+            }
+            
+            /* Campos condicionales */
+            .conditional-field {
+                margin-top: 15px !important;
+                padding: 12px !important;
+            }
+        }
+        
+        /* ===== PANTALLAS MUY PEQUEÑAS (Menos de 480px) ===== */
+        @media (max-width: 480px) {
+            /* Títulos aún más pequeños */
+            .module-title {
+                font-size: 1em !important;
+                padding-bottom: 8px !important;
+                margin-bottom: 15px !important;
+            }
+            
+            /* Mejor espacio entre elementos */
+            .module > * {
+                margin-bottom: 8px !important;
+            }
+            
+            .module label {
+                margin-bottom: 4px !important;
+            }
+            
+            .module input, 
+            .module select {
+                margin-bottom: 12px !important;
+            }
+            
+            /* Progreso aún más compacto */
+            .progress-container {
+                justify-content: space-around;
+            }
+            
+            .progress-step {
+                width: 30px;
+                height: 30px;
+                font-size: 12px;
+            }
+            
+            .progress-label {
+                font-size: 8px;
+                top: 35px;
+                width: 40px;
+            }
+            
+            .progress-bar {
+                top: 15px;
+            }
+            
+            /* Estadísticas - 1 columna */
             .stats-grid {
                 grid-template-columns: 1fr;
             }
+            
+            /* Mapa aún más pequeño */
             #mapa-css {
-                height: 400px;
+                height: 300px;
+            }
+            
+            .comuna-css {
+                font-size: 8px !important;
+                line-height: 1.1;
+            }
+            
+            /* Tabla - ajustar columnas */
+            .data-table td:nth-child(1),
+            .data-table th:nth-child(1) {
+                min-width: 80px;
+            }
+            
+            /* Botones de acción en tabla */
+            .btn-primary, .btn-danger {
+                padding: 6px 10px !important;
+                font-size: 11px !important;
+                margin-bottom: 5px !important;
+                display: block;
+                width: 100%;
+            }
+            
+            /* Textos generales */
+            body {
+                font-size: 14px;
+            }
+        }
+        
+        /* ===== ORIENTACIÓN HORIZONTAL EN MÓVILES ===== */
+        @media (max-width: 768px) and (orientation: landscape) {
+            #mapa-css {
+                height: 250px;
+            }
+            
+            .tabs {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                flex: 1 0 30%;
+                font-size: 12px;
+                padding: 10px 5px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
             }
         }
         
@@ -374,6 +736,16 @@
         @keyframes slideIn {
             from { opacity: 0; transform: translateX(-10px); }
             to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -418,7 +790,6 @@
                     </div>
                     <div style="flex:1;">
                         <label>Edad <span class="required">*</span></label>
-                        <!-- CAMPO DE EDAD COMO INPUT NUMÉRICO SIMPLE (NO SELECT) -->
                         <input type="number" id="edad" min="1" max="120" placeholder="Ej: 25">
                     </div>
                 </div>
@@ -525,7 +896,6 @@
                 <label>Comuna <span class="required">*</span></label>
                 <select id="comuna" onchange="cargarBarrios()">
                     <option value="">Seleccione una comuna</option>
-                    <!-- Las comunas se cargan dinámicamente -->
                 </select>
                 
                 <label>Barrio <span class="required">*</span></label>
@@ -563,7 +933,7 @@
                 </select>
                 
                 <div class="checkbox-container" style="display:flex; align-items:center; margin-top:25px; padding:18px; background:#f8f9fa; border-radius:8px;">
-                    <input type="checkbox" id="acepto" style="width:auto; margin-right:15px; transform:scale(1.3);">
+                    <input type="checkbox" id="acepto" style="width:auto; margin-right:15px;">
                     <label for="acepto" style="margin-top:0; font-weight:500;">Acepto el tratamiento de datos conforme a la Ley 1581 de 2012 <span class="required">*</span></label>
                 </div>
                 
@@ -704,7 +1074,28 @@
             }
         };
         
-        // Datos de comunas y barrios (445 barrios en 13 comunas)
+        // ============================================
+        // CORRECCIÓN CRÍTICA: NORMALIZAR NOMBRES DE COMUNAS
+        // ============================================
+        
+        // LISTA UNIFICADA DE COMUNAS - NOMBRES EXACTOS
+        const comunasUnificadas = {
+            "Centro": "Centro",
+            "Calambeo": "Calambeo", 
+            "San Simón": "San Simón",
+            "Piedra Pintada": "Piedra Pintada",
+            "Jordán": "Jordán",
+            "Vergel": "Vergel",
+            "Salado": "Salado",
+            "Simón Bolívar": "Simón Bolívar",
+            "Picaleña Mirolindo": "Picaleña Mirolindo",
+            "Estadio": "Estadio",
+            "Ferias": "Ferias",
+            "Las Brisas": "Las Brisas",
+            "Boquerón": "Boquerón"
+        };
+        
+        // Datos de barrios por comuna (usando nombres unificados)
         const barriosPorComuna = {
             "Centro": ["Augusto E Medina", "Baltazar", "Centro", "Combeima", "Estacion", "Interlaken", "La Pola", "Libertador", "Pola parte alta", "Pueblo nuevo", "San pedro Alejandrino"],
             "Calambeo": ["20 de Julio", "7 de Agosto", "Alaska", "Ancon", "Belén", "Belencito", "Centenario", "Centro pan de Azúcar", "Clarita Botero", "La Aurora", "La Paz", "La Sofía", "La Trinidad", "Malavar", "Paraíso", "San Diego", "Santa Barbara", "Santa Cruz", "VI Brigada", "Viña de Clambeo", "Villa Adriana"],
@@ -721,7 +1112,41 @@
             "Boquerón": ["Albania", "Boquerón", "Cerro Granate", "Colinas I", "Colinas II", "Darío Echandía", "Granada", "Isla", "Jazmín", "La Unión", "Miramar", "San Isidro", "terrazas de Boquerón", "Villa Mery"]
         };
         
-        const comunas = ["Centro", "Calambeo", "San Simón", "Piedra Pintada", "Jordán", "Vergel", "Salado", "Simón Bolívar", "Picaleña Mirolindo", "Estadio", "Ferias", "Las Brisas", "Boquerón"];
+        // Lista de comunas para el select
+        const listaComunas = Object.keys(comunasUnificadas);
+        
+        // ============================================
+        // FUNCIÓN PARA NORMALIZAR NOMBRES DE COMUNAS
+        // ============================================
+        
+        function normalizarNombreComuna(nombre) {
+            if (!nombre || typeof nombre !== 'string') return '';
+            
+            // Primero, eliminar espacios extras y normalizar
+            let nombreLimpio = nombre.trim();
+            
+            // Buscar coincidencias exactas primero
+            for (const comunaUnificada in comunasUnificadas) {
+                if (nombreLimpio === comunaUnificada) {
+                    return comunasUnificadas[comunaUnificada];
+                }
+            }
+            
+            // Buscar coincidencias aproximadas
+            for (const comunaUnificada in comunasUnificadas) {
+                const comunaNormalizada = comunaUnificada.toLowerCase().replace(/\s+/g, '');
+                const nombreLimpioNormalizado = nombreLimpio.toLowerCase().replace(/\s+/g, '');
+                
+                // Si hay una coincidencia cercana, retornar el nombre unificado
+                if (comunaNormalizada.includes(nombreLimpioNormalizado) || 
+                    nombreLimpioNormalizado.includes(comunaNormalizada)) {
+                    return comunasUnificadas[comunaUnificada];
+                }
+            }
+            
+            // Si no encuentra coincidencia, devolver el nombre original
+            return nombreLimpio;
+        }
         
         // ============================================
         // FUNCIONES DEL SISTEMA (PESTAÑAS)
@@ -750,10 +1175,10 @@
         function inicializarComunasSelect() {
             const comunaSelect = document.getElementById('comuna');
             comunaSelect.innerHTML = '<option value="">Seleccione una comuna</option>';
-            comunas.forEach((comuna, index) => {
+            listaComunas.forEach((comuna, index) => {
                 const option = document.createElement('option');
-                option.value = comuna;
-                option.textContent = `${index + 1}. ${comuna}`;
+                option.value = comunasUnificadas[comuna]; // Usar nombre unificado
+                option.textContent = `${index + 1}. ${comunasUnificadas[comuna]}`;
                 comunaSelect.appendChild(option);
             });
         }
@@ -781,17 +1206,74 @@
             }
         }
         
-        // Navegación entre módulos del formulario
+        // ============================================
+        // FUNCIONES PARA AJUSTAR BARRA DE PROGRESO EN MÓVILES
+        // ============================================
+        
+        function ajustarBarraProgresoParaMovil() {
+            if (window.innerWidth <= 768) {
+                const progressSteps = document.querySelectorAll('.progress-step');
+                const progressBar = document.getElementById('progressBar');
+                
+                // Ajustar posiciones para móvil
+                progressSteps.forEach((step, index) => {
+                    const label = step.querySelector('.progress-label');
+                    if (label) {
+                        // Asegurar que las etiquetas no se superpongan
+                        label.style.whiteSpace = 'nowrap';
+                        label.style.width = 'auto';
+                        label.style.maxWidth = '50px';
+                        label.style.overflow = 'hidden';
+                        label.style.textOverflow = 'ellipsis';
+                    }
+                });
+                
+                // Ajustar ancho de la barra
+                if (progressBar) {
+                    progressBar.style.left = '8%';
+                    progressBar.style.width = '84%';
+                }
+            }
+        }
+        
+        // ============================================
+        // FUNCIÓN PARA REDIMENSIONAR DINÁMICAMENTE
+        // ============================================
+        
+        function handleResize() {
+            ajustarBarraProgresoParaMovil();
+            
+            // Si estamos en el mapa, reiniciarlo para ajustar posiciones
+            if (document.getElementById('mapa-tab').classList.contains('active')) {
+                inicializarMapaCSS();
+            }
+        }
+        
+        // ============================================
+        // NAVEGACIÓN ENTRE MÓDULOS DEL FORMULARIO
+        // ============================================
+        
         let currentModule = 1;
         
         function showModule(n) {
             currentModule = n;
             
-            // Ocultar todos los módulos
-            document.querySelectorAll('.module').forEach(m => m.style.display = 'none');
+            // Ocultar todos los módulos con transición suave
+            document.querySelectorAll('.module').forEach(m => {
+                m.style.display = 'none';
+                m.style.opacity = '0';
+                m.style.transform = 'translateY(10px)';
+            });
             
-            // Mostrar módulo actual
-            document.getElementById(`m${n}`).style.display = 'block';
+            // Mostrar módulo actual con animación
+            const currentModuleElement = document.getElementById(`m${n}`);
+            setTimeout(() => {
+                currentModuleElement.style.display = 'block';
+                setTimeout(() => {
+                    currentModuleElement.style.opacity = '1';
+                    currentModuleElement.style.transform = 'translateY(0)';
+                }, 10);
+            }, 50);
             
             // Actualizar barra de progreso
             const progressSteps = document.querySelectorAll('.progress-step');
@@ -807,6 +1289,19 @@
                     step.classList.remove('active');
                 }
             });
+            
+            // Ajustar para móvil si es necesario
+            ajustarBarraProgresoParaMovil();
+            
+            // Hacer scroll suave al inicio del módulo en móviles
+            if (window.innerWidth <= 768) {
+                setTimeout(() => {
+                    currentModuleElement.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }, 300);
+            }
         }
         
         function nextModule(n) {
@@ -870,6 +1365,16 @@
                 return;
             }
             
+            // Obtener comuna seleccionada y NORMALIZARLA
+            const comunaSelect = document.getElementById('comuna');
+            const comunaNombre = comunaSelect.value;
+            
+            // Si no está en la lista unificada, normalizarla
+            let comunaNormalizada = comunaNombre;
+            if (comunaNombre && !comunasUnificadas[comunaNombre]) {
+                comunaNormalizada = normalizarNombreComuna(comunaNombre);
+            }
+            
             // Recoger datos del formulario
             const registro = {
                 id: Date.now(),
@@ -889,7 +1394,7 @@
                 subcategoriaTrabajo: document.getElementById('trabajo').value === 'informal' ? 
                     document.getElementById('subcategoriaTrabajo').options[document.getElementById('subcategoriaTrabajo').selectedIndex].text : '',
                 detalleTrabajo: document.getElementById('detalle').value || 'No especificado',
-                comuna: document.getElementById('comuna').options[document.getElementById('comuna').selectedIndex].text,
+                comuna: comunaNormalizada, // <-- NOMBRE NORMALIZADO
                 barrio: document.getElementById('barrio').value,
                 derechos: document.getElementById('derechos').options[document.getElementById('derechos').selectedIndex].text,
                 relacionInstitucion: document.getElementById('relacionInstitucion').options[document.getElementById('relacionInstitucion').selectedIndex].text,
@@ -967,9 +1472,9 @@
                 database.estadisticas.informales++;
             }
             
-            // Por comuna
+            // Por comuna (usando nombre normalizado)
             if (registro.comuna) {
-                const comunaKey = registro.comuna.trim();
+                const comunaKey = normalizarNombreComuna(registro.comuna);
                 if (!database.estadisticas.porComuna[comunaKey]) {
                     database.estadisticas.porComuna[comunaKey] = 0;
                 }
@@ -984,15 +1489,34 @@
         }
         
         // ============================================
-        // MAPA INTERACTIVO (MAPA 1 - CSS)
+        // MAPA INTERACTIVO (MAPA 1 - CSS) - CORREGIDO PARA MÓVIL
         // ============================================
         
         function inicializarMapaCSS() {
             const contenedor = document.getElementById('mapa-css');
             contenedor.innerHTML = '';
             
-            // Definición de las 13 comunas como rectángulos
-            const comunasMapa = [
+            // Detectar si es móvil
+            const esMovil = window.innerWidth <= 768;
+            
+            // Definir posiciones diferentes para móvil y desktop
+            const comunasMapa = esMovil ? [
+                // Posiciones optimizadas para móvil (más grandes, menos superposición)
+                { nombre: "Centro", top: "15%", left: "40%", width: "22%", height: "14%", color: "#0052B1" },
+                { nombre: "Calambeo", top: "10%", left: "65%", width: "25%", height: "12%", color: "#0066CC" },
+                { nombre: "San Simón", top: "28%", left: "60%", width: "26%", height: "14%", color: "#007BFF" },
+                { nombre: "Piedra Pintada", top: "42%", left: "35%", width: "32%", height: "14%", color: "#0052B1" },
+                { nombre: "Jordán", top: "30%", left: "10%", width: "28%", height: "17%", color: "#0066CC" },
+                { nombre: "Vergel", top: "52%", left: "5%", width: "32%", height: "15%", color: "#007BFF" },
+                { nombre: "Salado", top: "68%", left: "20%", width: "28%", height: "13%", color: "#0052B1" },
+                { nombre: "Simón Bolívar", top: "62%", left: "45%", width: "22%", height: "14%", color: "#0066CC" },
+                { nombre: "Picaleña Mirolindo", top: "42%", left: "70%", width: "30%", height: "14%", color: "#007BFF" },
+                { nombre: "Estadio", top: "5%", left: "30%", width: "22%", height: "11%", color: "#0052B1" },
+                { nombre: "Ferias", top: "0%", left: "55%", width: "20%", height: "11%", color: "#0066CC" },
+                { nombre: "Las Brisas", top: "72%", left: "0%", width: "28%", height: "14%", color: "#007BFF" },
+                { nombre: "Boquerón", top: "58%", left: "70%", width: "28%", height: "16%", color: "#0052B1" }
+            ] : [
+                // Posiciones originales para desktop
                 { nombre: "Centro", top: "30%", left: "45%", width: "12%", height: "15%", color: "#0052B1" },
                 { nombre: "Calambeo", top: "25%", left: "60%", width: "15%", height: "12%", color: "#0066CC" },
                 { nombre: "San Simón", top: "40%", left: "55%", width: "14%", height: "13%", color: "#007BFF" },
@@ -1027,36 +1551,49 @@
                 
                 contenedor.appendChild(div);
             });
-            
-            console.log('✅ Mapa CSS inicializado con 13 áreas interactivas.');
         }
         
         // Mostrar tooltip sobre una comuna en el mapa
         function mostrarTooltipMapa(event, nombreComuna) {
             const tooltip = document.getElementById('mapTooltip');
             
-            // Buscar registros para esta comuna (búsqueda exacta)
+            // Normalizar el nombre de la comuna del mapa
+            const comunaMapaNormalizada = normalizarNombreComuna(nombreComuna);
+            
+            // Buscar registros usando nombres normalizados
             const registros = database.registros.filter(r => {
                 if (!r.comuna) return false;
-                // Comparar eliminando espacios y normalizando
-                const comunaRegistro = r.comuna.trim();
-                const comunaMapa = nombreComuna.trim();
-                return comunaRegistro === comunaMapa;
+                const comunaRegistroNormalizada = normalizarNombreComuna(r.comuna);
+                return comunaRegistroNormalizada === comunaMapaNormalizada;
             }).length;
             
-            const barrios = barriosPorComuna[nombreComuna]?.length || 0;
+            const barrios = barriosPorComuna[comunaMapaNormalizada]?.length || 0;
             const densidad = barrios > 0 ? (registros / barrios).toFixed(2) : "0.00";
             
             tooltip.innerHTML = `
-                <div style="font-weight:bold; margin-bottom:5px; color:#0052B1;">${nombreComuna}</div>
+                <div style="font-weight:bold; margin-bottom:5px; color:#0052B1;">${comunaMapaNormalizada}</div>
                 <div>🏘️ <strong>Barrios:</strong> ${barrios}</div>
                 <div>📋 <strong>Registros:</strong> ${registros}</div>
                 <div>📈 <strong>Densidad:</strong> ${densidad} reg/barrio</div>
                 <div style="font-size:11px; margin-top:5px; color:#888;">Click para seleccionar</div>
             `;
             
-            tooltip.style.left = (event.clientX + 15) + 'px';
-            tooltip.style.top = (event.clientY - 15) + 'px';
+            // En móvil, centrar el tooltip
+            if (window.innerWidth <= 768) {
+                tooltip.style.position = 'fixed';
+                tooltip.style.top = '50%';
+                tooltip.style.left = '50%';
+                tooltip.style.transform = 'translate(-50%, -50%)';
+                tooltip.style.width = '80%';
+                tooltip.style.maxWidth = '300px';
+            } else {
+                tooltip.style.left = (event.clientX + 15) + 'px';
+                tooltip.style.top = (event.clientY - 15) + 'px';
+                tooltip.style.position = 'absolute';
+                tooltip.style.transform = 'none';
+                tooltip.style.width = 'auto';
+            }
+            
             tooltip.style.display = 'block';
             
             // Resaltar visualmente la comuna
@@ -1080,36 +1617,24 @@
         
         // Seleccionar una comuna en el mapa
         function seleccionarComunaMapa(nombreComuna) {
-            console.log(`🔍 Buscando registros para comuna: "${nombreComuna}"`);
+            // Normalizar el nombre de la comuna del mapa
+            const comunaMapaNormalizada = normalizarNombreComuna(nombreComuna);
             
-            // Buscar registros exactos para esta comuna
+            // Buscar registros usando nombres normalizados
             const registrosComuna = database.registros.filter(r => {
                 if (!r.comuna) return false;
-                const comunaRegistro = r.comuna.trim();
-                const comunaMapa = nombreComuna.trim();
-                return comunaRegistro === comunaMapa;
+                const comunaRegistroNormalizada = normalizarNombreComuna(r.comuna);
+                return comunaRegistroNormalizada === comunaMapaNormalizada;
             });
             
-            console.log(`📊 Registros encontrados para ${nombreComuna}: ${registrosComuna.length}`);
-            
-            // Mostrar depuración si no encuentra registros
-            if (registrosComuna.length === 0) {
-                console.log(`🔍 Todos los registros disponibles:`);
-                database.registros.forEach((r, i) => {
-                    console.log(`${i+1}. ${r.nombre} - Comuna: "${r.comuna}" (${typeof r.comuna})`);
-                });
-            }
-            
             // Actualizar los indicadores
-            document.getElementById('comunaSeleccionada').textContent = nombreComuna;
-            document.getElementById('barriosComuna').textContent = barriosPorComuna[nombreComuna]?.length || 0;
+            document.getElementById('comunaSeleccionada').textContent = comunaMapaNormalizada;
+            document.getElementById('barriosComuna').textContent = barriosPorComuna[comunaMapaNormalizada]?.length || 0;
             document.getElementById('registrosComuna').textContent = registrosComuna.length;
             
-            const densidad = barriosPorComuna[nombreComuna]?.length > 0 ? 
-                (registrosComuna.length / barriosPorComuna[nombreComuna].length).toFixed(2) : "0.00";
+            const densidad = barriosPorComuna[comunaMapaNormalizada]?.length > 0 ? 
+                (registrosComuna.length / barriosPorComuna[comunaMapaNormalizada].length).toFixed(2) : "0.00";
             document.getElementById('densidadComuna').textContent = densidad;
-            
-            console.log(`✅ Comuna seleccionada: ${nombreComuna} (${registrosComuna.length} registros)`);
         }
         
         // Generar reporte de comuna seleccionada
@@ -1120,23 +1645,25 @@
                 return;
             }
             
-            // Buscar registros exactos
+            // Normalizar el nombre de la comuna
+            const comunaNormalizada = normalizarNombreComuna(comuna);
+            
+            // Buscar registros usando nombres normalizados
             const registros = database.registros.filter(r => {
                 if (!r.comuna) return false;
-                const comunaRegistro = r.comuna.trim();
-                const comunaMapa = comuna.trim();
-                return comunaRegistro === comunaMapa;
+                const comunaRegistroNormalizada = normalizarNombreComuna(r.comuna);
+                return comunaRegistroNormalizada === comunaNormalizada;
             });
             
             if (registros.length === 0) {
-                alert(`No hay registros en la comuna ${comuna}.`);
+                alert(`No hay registros en la comuna ${comunaNormalizada}.`);
                 return;
             }
             
-            let reporte = `📊 REPORTE DE LA COMUNA: ${comuna}\n\n`;
+            let reporte = `📊 REPORTE DE LA COMUNA: ${comunaNormalizada}\n\n`;
             reporte += `📅 Fecha de generación: ${new Date().toLocaleDateString('es-CO')}\n`;
             reporte += `📋 Total de registros: ${registros.length}\n`;
-            reporte += `🏘️ Barrios en la comuna: ${barriosPorComuna[comuna]?.length || 0}\n\n`;
+            reporte += `🏘️ Barrios en la comuna: ${barriosPorComuna[comunaNormalizada]?.length || 0}\n\n`;
             
             // Estadísticas básicas
             const hombres = registros.filter(r => r.genero === 'Masculino').length;
@@ -1183,9 +1710,12 @@
                 return;
             }
             
+            // Normalizar el nombre de la comuna
+            const comunaNormalizada = normalizarNombreComuna(comuna);
+            
             // Cambiar a pestaña de admin y filtrar
             switchTab('admin');
-            document.getElementById('searchInput').value = comuna;
+            document.getElementById('searchInput').value = comunaNormalizada;
             buscarRegistros();
         }
         
@@ -1254,7 +1784,7 @@
                 registro.codigoCenso.toLowerCase().includes(busqueda) ||
                 registro.nombre.toLowerCase().includes(busqueda) ||
                 registro.cedula.toLowerCase().includes(busqueda) ||
-                registro.comuna.toLowerCase().includes(busqueda)
+                normalizarNombreComuna(registro.comuna).toLowerCase().includes(busqueda)
             ).reverse();
             
             if (resultados.length === 0) {
@@ -1395,7 +1925,7 @@
                 }
                 
                 if (registro.comuna) {
-                    const comunaKey = registro.comuna.trim();
+                    const comunaKey = normalizarNombreComuna(registro.comuna);
                     if (!database.estadisticas.porComuna[comunaKey]) {
                         database.estadisticas.porComuna[comunaKey] = 0;
                     }
@@ -1405,7 +1935,7 @@
         }
         
         // ============================================
-        // NUEVA FUNCIÓN: EXPORTAR A EXCEL MEJORADA
+        // FUNCIÓN DE EXPORTACIÓN A EXCEL
         // ============================================
         
         // Función para exportar TODOS los registros a Excel con formato de tabla
@@ -1510,7 +2040,7 @@
                     registro.codigoCenso.toLowerCase().includes(busqueda) ||
                     registro.nombre.toLowerCase().includes(busqueda) ||
                     registro.cedula.toLowerCase().includes(busqueda) ||
-                    registro.comuna.toLowerCase().includes(busqueda)
+                    normalizarNombreComuna(registro.comuna).toLowerCase().includes(busqueda)
                 );
             }
             
@@ -1629,6 +2159,12 @@
             // Configurar búsqueda en tiempo real
             document.getElementById('searchInput').addEventListener('input', buscarRegistros);
             
+            // Configurar redimensionamiento de ventana
+            window.addEventListener('resize', handleResize);
+            
+            // Ajustar barra de progreso inicialmente
+            ajustarBarraProgresoParaMovil();
+            
             // Cargar consecutivo desde localStorage
             const ultimoRegistro = database.registros[database.registros.length - 1];
             if (ultimoRegistro && ultimoRegistro.codigoCenso) {
@@ -1679,6 +2215,7 @@
             
             console.log('✅ Sistema de Censo Territorial inicializado.');
             console.log(`📊 Registros totales: ${database.registros.length}`);
+            console.log(`📱 Modo responsive activado`);
             
             // Actualizar panel de administración
             actualizarPanelAdmin();
